@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
     android:layout_marginLeft="8dp"
+    android:layout_marginTop="8dp"
     android:layout_marginRight="8dp"
     android:layout_marginBottom="8dp">
 
@@ -26,7 +26,7 @@
 
         <TextView
             android:id="@+id/title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/photo"
             android:textColor="@color/regular_text_color"
@@ -34,7 +34,7 @@
 
         <TextView
             android:id="@+id/year"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:layout_alignLeft="@id/title"
@@ -42,6 +42,19 @@
             android:layout_toRightOf="@id/photo"
             android:textColor="@color/regular_text_color"
             tools:text="2016" />
+
+        <TextView
+            android:id="@+id/genres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/year"
+            android:layout_alignLeft="@id/year"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/photo"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/regular_text_color"
+            tools:text="комедия, боевик, приключения" />
 
     </RelativeLayout>
 

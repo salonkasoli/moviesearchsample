@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
@@ -18,6 +19,47 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
         tools:listitem="@layout/movie_list_item_movie" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/search_status_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/toolbar"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="64dp"
+            android:layout_height="64dp" />
+
+        <TextView
+            android:id="@+id/status_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:text="@string/movie_list_empty_search_text"
+            android:textColor="@color/regular_text_color"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/travolta"
+            android:layout_width="293dp"
+            android:layout_height="300dp"
+            android:layout_below="@id/toolbar"
+            android:src="@drawable/travolta" />
+
+        <ImageView
+            android:id="@+id/error_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_no_interner" />
+
+    </LinearLayout>
+
+</RelativeLayout>

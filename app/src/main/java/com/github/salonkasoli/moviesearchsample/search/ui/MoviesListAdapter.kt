@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.core.BaseViewHolder
+import com.github.salonkasoli.moviesearchsample.genre.Genre
 
 class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -25,6 +26,9 @@ class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             h.title.text = movie.title
             h.year.text = movie.releaseDate
             h.photo.setImageURI(movie.posterPreviewUrl)
+            h.photo.hierarchy.setFailureImage(R.drawable.ic_no_interner)
+            h.photo.hierarchy.setPlaceholderImage(R.drawable.ic_waiting)
+            h.genres.text = movie.genres.joinToString { genre: Genre -> genre.name }
         } else {
             h as LoadingHolder
             Log.wtf("lol", "binding loading, state = $loadingState")
@@ -82,6 +86,7 @@ class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         val photo: SimpleDraweeView = findView(R.id.photo)
         val title: TextView = findView(R.id.title)
         val year: TextView = findView(R.id.year)
+        val genres: TextView = findView(R.id.genres)
     }
 
     class LoadingHolder(

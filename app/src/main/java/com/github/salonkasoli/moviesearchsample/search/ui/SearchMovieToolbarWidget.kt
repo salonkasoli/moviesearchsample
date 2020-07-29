@@ -2,7 +2,6 @@ package com.github.salonkasoli.moviesearchsample.search.ui
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.MenuItem
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
@@ -31,6 +30,7 @@ class SearchMovieToolbarWidget(
             override fun onQueryTextSubmit(query: String?): Boolean {
                 handler.removeCallbacks(searchRunnable)
                 triggerSearchListener()
+                searchView.clearFocus()
                 return false
             }
 
@@ -44,29 +44,18 @@ class SearchMovieToolbarWidget(
             }
         })
         searchView.setOnSearchClickListener {
-            // Грязый хак, чтобы SearchView нормально разворачивался в landscape ориентации
+            // Хак, чтобы SearchView нормально разворачивался в landscape ориентации
             searchView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
 
             searchClickedListener?.invoke()
         }
 
-        savedState.consumeRestoredStateForKey(BUNDLE_KEY)?.let { bundle: Bundle ->
-            val wasExpanded = bundle.getBoolean(IS_SEARCH_EXPANDED, false)
-            if (wasExpanded) {
-                menuItem.expandActionView()
-            }
-        }
-        savedState.registerSavedStateProvider(BUNDLE_KEY, {
-            return@registerSavedStateProvider Bundle().apply {
-                putBoolean(IS_SEARCH_EXPANDED, !searchView.isIconified)
-            }
-        })
+        manageSaveState(savedState, menuItem)
 
         lifecycle.addObserver(this)
     }
 
     fun updateQuery(query: String) {
-        Log.wtf("lol", "updating query = $query")
         searchView.setQuery(query, false)
     }
 
@@ -83,10 +72,31 @@ class SearchMovieToolbarWidget(
         triggerSearchListener()
     }
 
+    private fun manageSaveState(savedState: SavedStateRegistry, menuItem: MenuItem) {
+        savedState.consumeRestoredStateForKey(BUNDLE_KEY)?.let { bundle: Bundle ->
+            val wasExpanded = bundle.getBoolean(IS_SEARCH_EXPANDED, false)
+            if (wasExpanded) {
+                menuItem.expandActionView()
+                // Маленький хак, чтобы после поворота экрана не выскакивала клавиатура.
+                val hasFocus = bundle.getBoolean(IS_SEARCH_FOCUSED, false)
+                if (!hasFocus) {
+                    searchView.clearFocus()
+                }
+            }
+        }
+        savedState.registerSavedStateProvider(BUNDLE_KEY, {
+            return@registerSavedStateProvider Bundle().apply {
+                putBoolean(IS_SEARCH_EXPANDED, !searchView.isIconified)
+                putBoolean(IS_SEARCH_FOCUSED, searchView.hasFocus())
+            }
+        })
+    }
+
     companion object {
         private const val SEARCH_DELAY = 500L
 
         private const val BUNDLE_KEY = "search"
         private const val IS_SEARCH_EXPANDED = "is_expanded"
+        private const val IS_SEARCH_FOCUSED = "is_search_focused"
     }
 }

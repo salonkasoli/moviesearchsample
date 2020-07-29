@@ -1,6 +1,7 @@
 package com.github.salonkasoli.moviesearchsample.search.api
 
 import android.content.Context
+import android.util.Log
 import com.github.salonkasoli.moviesearchsample.Const
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.core.*
@@ -38,6 +39,8 @@ class MovieSearchRepository(
         if (!response.isSuccessful || response.body() == null) {
             return@withContext RepoError<MovieSearchResponse>(IllegalStateException("response = $response, body = ${response.body()}"))
         }
+
+        Log.wtf("lol", "got movies ${response.body()!!}")
 
         return@withContext RepoSuccess(response.body()!!)
     }

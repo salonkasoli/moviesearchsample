@@ -1,4 +1,4 @@
-package com.github.salonkasoli.moviesearchsample.core
+package com.github.salonkasoli.moviesearchsample.core.api
 
 import retrofit2.Call
 import retrofit2.Response
@@ -15,7 +15,9 @@ data class ExecutionError<T>(
 
 fun <T> Call<T>.executeSafe(): ExecutionResult<T> {
     return try {
-        ExecutionSuccess(execute())
+        ExecutionSuccess(
+            execute()
+        )
     } catch (e: Exception) {
         ExecutionError(e)
     }

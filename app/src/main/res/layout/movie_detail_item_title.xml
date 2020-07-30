@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="16dp">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/photo"
+                android:layout_width="64dp"
+                android:layout_height="80dp" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_toRightOf="@id/photo"
+                android:textColor="@color/regular_text_color"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="Бегущий по лезвию" />
+
+            <TextView
+                android:id="@+id/year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title"
+                android:layout_alignLeft="@id/title"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/regular_text_color"
+                android:textSize="18sp"
+                tools:text="27/05/2018" />
+
+            <TextView
+                android:id="@+id/original_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/year"
+                android:layout_alignLeft="@id/title"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/regular_text_color"
+                android:textSize="18sp"
+                tools:text="драма, комедия, криминал" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_color" />
+
+        <TextView
+            android:id="@+id/overview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/regular_text_color"
+            android:textSize="16sp"
+            tools:text="Фильм о том, как Райан Гослинг пытается найти себя" />
+
+        <View
+            android:id="@+id/overview_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_color" />
+
+    </LinearLayout>
+</ScrollView>

@@ -1,4 +1,4 @@
-package com.github.salonkasoli.moviesearchsample.core
+package com.github.salonkasoli.moviesearchsample.core.api
 
 sealed class RepoResponse<T>
 

@@ -1,4 +1,4 @@
-package com.github.salonkasoli.moviesearchsample.core
+package com.github.salonkasoli.moviesearchsample.core.rv
 
 import android.view.LayoutInflater
 import android.view.View

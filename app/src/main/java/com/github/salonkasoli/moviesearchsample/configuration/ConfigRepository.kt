@@ -3,7 +3,7 @@ package com.github.salonkasoli.moviesearchsample.configuration
 import android.content.Context
 import com.github.salonkasoli.moviesearchsample.Const
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.core.*
+import com.github.salonkasoli.moviesearchsample.core.api.*
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -34,7 +34,9 @@ class ConfigRepository(
      */
     suspend fun getConfig(): RepoResponse<Config> = withContext(Dispatchers.IO) {
         getCachedConfig()?.let { config: Config ->
-            return@withContext RepoSuccess(config)
+            return@withContext RepoSuccess(
+                config
+            )
         }
 
         val result: ExecutionResult<Config> = retrofit.create(ConfigApi::class.java)
@@ -42,7 +44,9 @@ class ConfigRepository(
             .executeSafe()
 
         if (result is ExecutionError) {
-            return@withContext RepoError<Config>(result.exception)
+            return@withContext RepoError<Config>(
+                result.exception
+            )
         }
 
         val response: Response<Config> = (result as ExecutionSuccess).response
@@ -59,7 +63,9 @@ class ConfigRepository(
             .putLong(PREF_LAST_UPDATE_TIME, System.currentTimeMillis())
             .apply()
 
-        return@withContext RepoSuccess(config)
+        return@withContext RepoSuccess(
+            config
+        )
     }
 
     private fun getCachedConfig(): Config? {

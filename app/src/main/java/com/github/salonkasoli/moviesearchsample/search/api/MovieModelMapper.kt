@@ -4,7 +4,7 @@ import com.github.salonkasoli.moviesearchsample.configuration.Config
 import com.github.salonkasoli.moviesearchsample.genre.Genre
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
 
-class MovieSearchMapper(
+class MovieModelMapper(
     private val configuration: Config,
     private val genres: List<Genre>
 ) {

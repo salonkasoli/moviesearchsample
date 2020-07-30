@@ -3,7 +3,7 @@ package com.github.salonkasoli.moviesearchsample.genre
 import android.content.Context
 import com.github.salonkasoli.moviesearchsample.Const
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.core.*
+import com.github.salonkasoli.moviesearchsample.core.api.*
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,7 +33,9 @@ class GenresRepository(
      */
     suspend fun getMovieGenres(): RepoResponse<GenreResponse> = withContext(Dispatchers.IO) {
         getCachedGenres()?.let { genres: GenreResponse ->
-            return@withContext RepoSuccess(genres)
+            return@withContext RepoSuccess(
+                genres
+            )
         }
 
         val result: ExecutionResult<GenreResponse> = retrofit.create(GenresApi::class.java)
@@ -41,7 +43,9 @@ class GenresRepository(
             .executeSafe()
 
         if (result is ExecutionError) {
-            return@withContext RepoError<GenreResponse>(result.exception)
+            return@withContext RepoError<GenreResponse>(
+                result.exception
+            )
         }
 
         val response: Response<GenreResponse> = (result as ExecutionSuccess).response
@@ -58,7 +62,9 @@ class GenresRepository(
             .putLong(PREF_LAST_UPDATE_TIME, System.currentTimeMillis())
             .apply()
 
-        return@withContext RepoSuccess(genres)
+        return@withContext RepoSuccess(
+            genres
+        )
     }
 
     private fun getCachedGenres(): GenreResponse? {

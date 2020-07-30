@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.core.BaseViewHolder
+import com.github.salonkasoli.moviesearchsample.core.rv.BaseViewHolder
 import com.github.salonkasoli.moviesearchsample.genre.Genre
 
 class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

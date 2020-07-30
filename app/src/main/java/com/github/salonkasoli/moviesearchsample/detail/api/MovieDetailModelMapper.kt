@@ -14,7 +14,9 @@ class MovieDetailModelMapper(
             networkModel.releaseDate,
             networkModel.genres,
             networkModel.overview,
-            getPosterPreviewUrlPrefix() + networkModel.posterPath
+            getPosterPreviewUrlPrefix() + networkModel.posterPath,
+            networkModel.voteAverage,
+            networkModel.voteCount
         )
     }
 

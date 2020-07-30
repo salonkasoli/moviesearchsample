@@ -9,6 +9,7 @@ import com.github.salonkasoli.moviesearchsample.genre.GenresRepository
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 import com.github.salonkasoli.moviesearchsample.search.SearchMovieController
 import com.github.salonkasoli.moviesearchsample.search.SearchMovieInteractor
+import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchMapperFactory
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
 import com.github.salonkasoli.moviesearchsample.search.ui.MoviesListWidget
 import com.github.salonkasoli.moviesearchsample.search.ui.SearchMovieToolbarWidget
@@ -33,10 +34,13 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
             SearchMovieInteractor(
                 lifecycleScope,
                 MovieSearchRepository(this),
-                ConfigRepository(this),
-                GenresRepository(this),
+                MovieSearchMapperFactory(
+                    ConfigRepository(this),
+                    GenresRepository(this)
+                ),
                 cache
             ),
+            this,
             savedStateRegistry
         )
         setSupportActionBar(findViewById(R.id.toolbar))

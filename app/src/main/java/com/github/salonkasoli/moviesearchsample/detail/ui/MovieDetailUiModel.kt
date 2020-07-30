@@ -8,5 +8,7 @@ data class MovieDetailUiModel(
     val year: String,
     val genres: List<Genre>,
     val overview: String?,
-    val posterUrl: String?
+    val posterUrl: String?,
+    val averageVote: Float,
+    val voteCount: Int
 )

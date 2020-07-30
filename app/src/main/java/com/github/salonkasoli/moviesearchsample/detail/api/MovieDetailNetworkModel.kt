@@ -24,7 +24,7 @@ data class MovieDetailNetworkModel(
     val overview: String?,
     @SerializedName("popularity")
     val popularity: Float,
-    @SerializedName("posterPath")
+    @SerializedName("poster_path")
     val posterPath: String?,
     @SerializedName("production_companies")
     val productionCompanies: List<ProductionCompany>,

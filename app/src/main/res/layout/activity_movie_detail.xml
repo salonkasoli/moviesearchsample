@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,10 +13,8 @@
         android:theme="@style/ToolbarTheme"
         app:titleTextColor="@color/regular_text_color_inverse" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/movie_list_item_movie" />
+    <include layout="@layout/movie_detail_item_title" />
+
+    <include layout="@layout/loading_layout" />
 
 </LinearLayout>

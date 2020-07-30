@@ -17,6 +17,7 @@ class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var loadingState = LoadingState.GONE
     var errorClickListener: (() -> Unit)? = null
+    var clickListener: ((MovieUiModel) -> Unit)? = null
 
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         if (position < movies.size) {
@@ -29,6 +30,10 @@ class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             h.photo.hierarchy.setFailureImage(R.drawable.ic_no_interner)
             h.photo.hierarchy.setPlaceholderImage(R.drawable.ic_waiting)
             h.genres.text = movie.genres.joinToString { genre: Genre -> genre.name }
+
+            h.itemView.setOnClickListener {
+                clickListener?.invoke(movie)
+            }
         } else {
             h as LoadingHolder
             Log.wtf("lol", "binding loading, state = $loadingState")

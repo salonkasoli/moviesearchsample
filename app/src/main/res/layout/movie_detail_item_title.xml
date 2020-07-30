@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/movie_detail_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -46,7 +47,7 @@
                 tools:text="27/05/2018" />
 
             <TextView
-                android:id="@+id/original_title"
+                android:id="@+id/genres"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/year"
@@ -59,6 +60,23 @@
         </RelativeLayout>
 
         <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_color" />
+
+        <TextView
+            android:id="@+id/vote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/regular_text_color"
+            android:textSize="16sp"
+            tools:text="Оценка: 7.6/10 (15000)" />
+
+        <View
+            android:id="@+id/divider_vote"
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/divider_color" />

@@ -1,8 +1,11 @@
 package com.github.salonkasoli.moviesearchsample.search
 
+import android.content.Context
 import android.os.Bundle
 import androidx.savedstate.SavedStateRegistry
+import com.github.salonkasoli.moviesearchsample.detail.MovieDetailActivity
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchState
+import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
 import com.github.salonkasoli.moviesearchsample.search.ui.MoviesListWidget
 import com.github.salonkasoli.moviesearchsample.search.ui.SearchMovieToolbarWidget
 
@@ -10,6 +13,7 @@ class SearchMovieController(
     private val moviesWidget: MoviesListWidget,
     private val cache: MovieListCache,
     private val searchInteractor: SearchMovieInteractor,
+    context: Context,
     savedStateRegistry: SavedStateRegistry
 ) {
 
@@ -27,6 +31,9 @@ class SearchMovieController(
             }
         })
 
+        moviesWidget.movieClickListener = { movieUiModel: MovieUiModel ->
+            context.startActivity(MovieDetailActivity.intent(context, movieUiModel.id))
+        }
         moviesWidget.paginationController.loadMoreListener = {
             searchInteractor.loadMoreMovies(currentQuery)
         }

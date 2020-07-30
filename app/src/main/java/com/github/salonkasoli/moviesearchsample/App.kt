@@ -2,6 +2,7 @@ package com.github.salonkasoli.moviesearchsample
 
 import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 
 class App : Application() {
@@ -12,6 +13,7 @@ class App : Application() {
         Fresco.initialize(this)
 
         put(MovieListCache())
+        put(MovieDetailCache())
     }
 
     companion object {

@@ -16,6 +16,7 @@ class MoviesListWidget(
 
     val paginationController = PaginationController(list)
 
+    var movieClickListener: ((MovieUiModel) -> Unit)? = null
     var errorClickListener: (() -> Unit)? = null
 
     private val adapter = MoviesListAdapter()
@@ -26,6 +27,9 @@ class MoviesListWidget(
         list.adapter = adapter
         adapter.errorClickListener = {
             errorClickListener?.invoke()
+        }
+        adapter.clickListener = { movieUiModel: MovieUiModel ->
+            movieClickListener?.invoke(movieUiModel)
         }
     }
 

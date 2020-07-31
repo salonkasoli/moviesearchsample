@@ -3,7 +3,7 @@ package com.github.salonkasoli.moviesearchsample.search
 import android.content.Context
 import android.os.Bundle
 import androidx.savedstate.SavedStateRegistry
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailActivity
+import com.github.salonkasoli.moviesearchsample.auth.AuthActivity
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchState
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
 import com.github.salonkasoli.moviesearchsample.search.ui.MoviesListWidget
@@ -32,7 +32,8 @@ class SearchMovieController(
         })
 
         moviesWidget.movieClickListener = { movieUiModel: MovieUiModel ->
-            context.startActivity(MovieDetailActivity.intent(context, movieUiModel.id))
+            //context.startActivity(MovieDetailActivity.intent(context, movieUiModel.id))
+            context.startActivity(AuthActivity.intent(context))
         }
         moviesWidget.paginationController.loadMoreListener = {
             searchInteractor.loadMoreMovies(currentQuery)

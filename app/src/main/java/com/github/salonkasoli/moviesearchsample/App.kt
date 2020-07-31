@@ -2,6 +2,7 @@ package com.github.salonkasoli.moviesearchsample
 
 import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 
@@ -14,6 +15,7 @@ class App : Application() {
 
         put(MovieListCache())
         put(MovieDetailCache())
+        put(SessionIdCache(this))
     }
 
     companion object {

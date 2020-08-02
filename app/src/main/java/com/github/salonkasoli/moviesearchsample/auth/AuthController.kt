@@ -1,18 +1,21 @@
 package com.github.salonkasoli.moviesearchsample.auth
 
-import android.util.Log
+import android.app.Activity
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionInteractor
 import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
+import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 
 class AuthController(
     private val authWidget: AuthWidget,
-    private val sessionInteractor: SessionInteractor
+    private val sessionInteractor: SessionInteractor,
+    private val movieDetailCache: MovieDetailCache,
+    private val activity: Activity
 ) {
 
     init {
-        sessionInteractor.successListener = { sessionId: String ->
-            // TODO добавить нормальную обработку
-            Log.wtf("lol", "sessionId created! $sessionId")
+        sessionInteractor.successListener = {
+            movieDetailCache.clear()
+            activity.finish()
         }
         sessionInteractor.errorListener = {
             authWidget.showError()
@@ -20,7 +23,7 @@ class AuthController(
 
         authWidget.authClickListener = { login: String, password: String ->
             authWidget.showLoading()
-            sessionInteractor.getSessionId(login, password)
+            sessionInteractor.createSessionId(login, password)
         }
     }
 }

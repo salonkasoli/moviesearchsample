@@ -14,4 +14,8 @@ class MovieDetailCache {
     fun put(id: Int, movieDetail: MovieDetailUiModel) {
         cache.put(id, movieDetail)
     }
+
+    fun clear() {
+        cache.evictAll()
+    }
 }

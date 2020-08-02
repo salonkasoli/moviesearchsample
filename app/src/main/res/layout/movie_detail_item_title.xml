@@ -70,10 +70,24 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             android:textColor="@color/regular_text_color"
             android:textSize="16sp"
             tools:text="Оценка: 7.6/10 (15000)" />
+
+        <TextView
+            android:id="@+id/user_vote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="?attr/selectableItemBackground"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:textColor="@color/regular_text_color"
+            android:textSize="16sp"
+            tools:text="Ваша оценка:" />
 
         <View
             android:id="@+id/divider_vote"

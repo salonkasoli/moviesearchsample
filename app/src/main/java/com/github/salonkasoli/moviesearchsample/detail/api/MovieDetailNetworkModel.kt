@@ -50,7 +50,9 @@ data class MovieDetailNetworkModel(
     @SerializedName("vote_average")
     val voteAverage: Float,
     @SerializedName("vote_count")
-    val voteCount: Int
+    val voteCount: Int,
+    @SerializedName("account_states")
+    val accountStates: Map<String, Any>?
 )
 
 data class ProductionCompany(

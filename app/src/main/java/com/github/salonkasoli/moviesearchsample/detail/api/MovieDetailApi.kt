@@ -11,6 +11,8 @@ interface MovieDetailApi {
     fun getMovieDetail(
         @Path("movie_id") movieId: Int,
         @Query("api_key") apiKey: String,
-        @Query("language") language: String = "ru-RU"
+        @Query("session_id") sessionId: String?,
+        @Query("language") language: String = "ru-RU",
+        @Query("append_to_response") appendToResponse: String = "account_states"
     ): Call<MovieDetailNetworkModel>
 }

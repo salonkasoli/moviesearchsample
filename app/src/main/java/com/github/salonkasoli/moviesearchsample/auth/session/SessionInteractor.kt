@@ -1,6 +1,7 @@
 package com.github.salonkasoli.moviesearchsample.auth.session
 
 import androidx.lifecycle.LifecycleCoroutineScope
+import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenResponse
 import com.github.salonkasoli.moviesearchsample.auth.token.newly.NewTokenRepository
@@ -15,13 +16,14 @@ class SessionInteractor(
     private val newTokenRepository: NewTokenRepository,
     private val authedTokenRepository: AuthedTokenRepository,
     private val sessionRepository: SessionRepository,
+    private val sessionIdCache: SessionIdCache,
     private val lifecycleCoroutineScope: LifecycleCoroutineScope
 ) {
 
     var errorListener: (() -> Unit)? = null
-    var successListener: ((sessionId: String) -> Unit)? = null
+    var successListener: (() -> Unit)? = null
 
-    fun getSessionId(
+    fun createSessionId(
         login: String,
         password: String
     ) = lifecycleCoroutineScope.launchWhenCreated {
@@ -52,9 +54,11 @@ class SessionInteractor(
         withContext(Dispatchers.Main) {
             when (sessionResponse) {
                 is RepoError -> errorListener?.invoke()
-                is RepoSuccess -> successListener?.invoke(sessionResponse.data.sessionId)
+                is RepoSuccess -> {
+                    sessionIdCache.setSessionId(sessionResponse.data.sessionId)
+                    successListener?.invoke()
+                }
             }
         }
     }
-
 }

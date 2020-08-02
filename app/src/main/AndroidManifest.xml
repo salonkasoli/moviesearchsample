@@ -21,6 +21,7 @@
         </activity>
         <activity android:name=".detail.MovieDetailActivity" />
         <activity android:name=".auth.AuthActivity" />
+        <activity android:name=".rate.RateActivity" />
     </application>
 
 </manifest>

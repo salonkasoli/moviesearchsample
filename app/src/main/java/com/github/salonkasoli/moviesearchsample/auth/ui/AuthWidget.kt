@@ -1,7 +1,9 @@
 package com.github.salonkasoli.moviesearchsample.auth.ui
 
+import android.view.KeyEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -24,6 +26,16 @@ class AuthWidget(
                 passwordEditText.editableText.toString()
             )
         }
+
+        passwordEditText.setOnEditorActionListener { v, actionId: Int, event: KeyEvent? ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                authClickListener?.invoke(
+                    loginEditText.editableText.toString(),
+                    passwordEditText.editableText.toString()
+                )
+            }
+            return@setOnEditorActionListener false
+        }
     }
 
     fun showLoading() {
@@ -32,7 +44,7 @@ class AuthWidget(
     }
 
     fun showError() {
-        container.visibility = View.GONE
+        container.visibility = View.VISIBLE
         progressBar.visibility = View.GONE
         Toast.makeText(container.context, "Ошибка", Toast.LENGTH_SHORT).show()
     }

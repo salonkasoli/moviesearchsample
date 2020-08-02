@@ -22,12 +22,15 @@ class MovieDetailWidget(
     private val year: TextView,
     private val genres: TextView,
     private val vote: TextView,
+    private val userVote: TextView,
     private val voteDivider: View,
     private val overview: TextView,
     private val overviewDivider: View
 ) {
 
     var retryClickListener: (() -> Unit)? = null
+    var authClickListener: (() -> Unit)? = null
+    var rateClickListener: (() -> Unit)? = null
 
     private val badVoteColor = ContextCompat.getColor(
         movieDetailContainer.context, R.color.movie_detail_bad_color
@@ -56,8 +59,30 @@ class MovieDetailWidget(
         genres.text = movieDetail.genres.joinToString { genre: Genre -> genre.name }
 
         vote.text = createVoteCharSequence(movieDetail.averageVote, movieDetail.voteCount)
+        when (movieDetail.userVote) {
+            MovieDetailUiModel.USER_VOTE_NO_AUTH -> {
+                userVote.text = "Войдите чтобы оценить"
+                userVote.setOnClickListener {
+                    authClickListener?.invoke()
+                }
+            }
+            MovieDetailUiModel.USER_VOTE_EMPTY -> {
+                userVote.text = "Оценить"
+                userVote.setOnClickListener {
+                    rateClickListener?.invoke()
+                }
+            }
+            MovieDetailUiModel.USER_VOTE_ERROR -> {
+                userVote.text = "Не удалось загрузить оценку"
+                userVote.isClickable = false
+            }
+            else -> {
+                userVote.text = "Ваша оценка: ${movieDetail.userVote}"
+                userVote.isClickable = false
+            }
+        }
 
-        if (movieDetail.overview != null) {
+        if (!movieDetail.overview.isNullOrBlank()) {
             overview.visibility = View.VISIBLE
             overview.text = movieDetail.overview
             overviewDivider.visibility = View.VISIBLE

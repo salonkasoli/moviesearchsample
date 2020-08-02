@@ -3,14 +3,17 @@ package com.github.salonkasoli.moviesearchsample.auth
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.github.salonkasoli.moviesearchsample.App
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionInteractor
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.newly.NewTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
+import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 
 class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
 
@@ -28,9 +31,23 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
                 NewTokenRepository(this),
                 AuthedTokenRepository(this),
                 SessionRepository(this),
+                App.get(SessionIdCache::class.java),
                 lifecycleScope
-            )
+            ),
+            App.get(MovieDetailCache::class.java),
+            this
         )
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.title = "Авторизация"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     companion object {

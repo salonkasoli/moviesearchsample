@@ -19,8 +19,20 @@ class MovieDetailInteractor(
     private val cache: MovieDetailCache
 ) {
 
+    /**
+     * Дернется, когда пойдет загрузка фильма.
+     * Может и не вызваться, если фильм уже есть в кэше. Тогда сразу вызовется success.
+     */
     var loadingListener: (() -> Unit)? = null
+
+    /**
+     * Дернется, когда мы успешно загрузим фильм (или достанем его из кэша).
+     */
     var successListener: ((movieDetail: MovieDetailUiModel) -> Unit)? = null
+
+    /**
+     * Дернется, если не удастся получить фильм из кэша и интернета.
+     */
     var errorListener: (() -> Unit)? = null
 
     private var mapper: MovieDetailModelMapper? = null

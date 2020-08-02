@@ -10,6 +10,11 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.savedstate.SavedStateRegistry
 
+/**
+ * Абстракция над [SearchView].
+ *
+ * Содержит в себе костыли, позволяющие нормально поворачивать экран и не взрывать приложение.
+ */
 class SearchMovieToolbarWidget(
     menuItem: MenuItem,
     savedState: SavedStateRegistry,

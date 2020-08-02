@@ -1,5 +1,9 @@
 package com.github.salonkasoli.moviesearchsample.core.api
 
+/**
+ * Результат работы репозитория.
+ * Это либо успех [RepoResponse], либо ошибка [RepoError].
+ */
 sealed class RepoResponse<T>
 
 data class RepoSuccess<T>(

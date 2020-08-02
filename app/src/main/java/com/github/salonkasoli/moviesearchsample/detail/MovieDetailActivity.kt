@@ -15,6 +15,9 @@ import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailModelMappe
 import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailRepository
 import retrofit2.Retrofit
 
+/**
+ * Экран, на котором можно посмотреть детальную инфомрацию о фильме.
+ */
 class MovieDetailActivity : AppCompatActivity(R.layout.activity_movie_detail) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -10,6 +10,12 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 
+/**
+ * Репозиторий, позволяющий получить жанры фильмов (см. [Genre]).
+ *
+ * Некоторые АПИ возвращают только id жанров. Для того, чтобы мы смогли показзать юзеру жанры
+ * фильмов необходимо заблаговременно их запросить.
+ */
 class GenresRepository(
     private val retrofit: Retrofit,
     context: Context,
@@ -21,10 +27,6 @@ class GenresRepository(
 
     private val apiKey = context.getString(R.string.moviedb_api_key)
 
-    /**
-     * @return Конфигурацию АПИ. Она понадобится, например, для формирования урлов к фоткам.
-     * Конфигурацию хранится в кэше и обновляется раз в 24 часа.
-     */
     suspend fun getMovieGenres(): RepoResponse<GenreResponse> = withContext(Dispatchers.IO) {
         getCachedGenres()?.let { genres: GenreResponse ->
             return@withContext RepoSuccess(

@@ -12,6 +12,16 @@ import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+/**
+ * Интерактор, с помощью которого можно залогиниться в приложении.
+ *
+ * Схема логина следующая:
+ * 1) Генерируем request токен
+ * 2) На его основе с помощью логина + пароля генерируем авторизованный request token
+ * 3) Генерируем session id и кэшируем его
+ *
+ * Далее session id это токен, с которым будем ходить к остальным АПИ.
+ */
 class SessionInteractor(
     private val newTokenRepository: NewTokenRepository,
     private val authedTokenRepository: AuthedTokenRepository,
@@ -20,7 +30,15 @@ class SessionInteractor(
     private val lifecycleCoroutineScope: LifecycleCoroutineScope
 ) {
 
+    /**
+     * Дернется, если обосрамс произошел на любом этапе формирования sessionId.
+     */
     var errorListener: (() -> Unit)? = null
+
+    /**
+     * Дернется, когда юзер успешно авторизовался.
+     * Session Id можно будет получить по всему приложению у [SessionIdCache].
+     */
     var successListener: (() -> Unit)? = null
 
     fun createSessionId(
@@ -37,7 +55,7 @@ class SessionInteractor(
         tokenResponse as RepoSuccess
 
         val authedTokenResponse: RepoResponse<AuthedTokenResponse> =
-            authedTokenRepository.createNewSession(login, password, tokenResponse.data.token)
+            authedTokenRepository.createAuthedToken(login, password, tokenResponse.data.token)
 
         if (authedTokenResponse is RepoError) {
             withContext(Dispatchers.Main) {

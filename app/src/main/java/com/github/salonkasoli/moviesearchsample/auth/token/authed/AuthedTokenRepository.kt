@@ -14,7 +14,7 @@ class AuthedTokenRepository(
 ) {
     private val apiKey = context.getString(R.string.moviedb_api_key)
 
-    suspend fun createNewSession(
+    suspend fun createAuthedToken(
         login: String,
         password: String,
         requestToken: String

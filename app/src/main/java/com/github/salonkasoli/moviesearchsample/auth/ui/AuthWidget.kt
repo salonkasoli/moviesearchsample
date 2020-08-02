@@ -17,6 +17,10 @@ class AuthWidget(
     private val progressBar: ProgressBar
 ) {
 
+    /**
+     * Дернется, когда юзер нажмет на кнопку "войти" или когда он заполнит логин/пароль
+     * и нажмет на клавиатуре "Done".
+     */
     var authClickListener: ((login: String, password: String) -> Unit)? = null
 
     init {

@@ -3,6 +3,9 @@ package com.github.salonkasoli.moviesearchsample.detail.api
 import com.github.salonkasoli.moviesearchsample.configuration.Config
 import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
 
+/**
+ * Маппит [MovieDetailNetworkModel] в [MovieDetailUiModel].
+ */
 class MovieDetailModelMapper(
     private val configuration: Config
 ) {

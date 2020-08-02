@@ -30,6 +30,7 @@ class App : Application() {
     companion object {
         lateinit var instance: App
 
+        // Вместо Dagger2 здесь живет небольшой контейнер зависимостей.
         private val deps = HashMap<Class<out Any>, Any>()
 
         fun <T : Any> put(any: T) {

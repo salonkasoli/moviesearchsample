@@ -16,6 +16,9 @@ import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import retrofit2.Retrofit
 
+/**
+ * Экран, на котором юзер может авторизоваться.
+ */
 class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

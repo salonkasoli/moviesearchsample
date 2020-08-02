@@ -23,6 +23,9 @@ class MovieDetailController(
         widget.rateClickListener = {
             context.startActivity(RateActivity.intent(context, movieId))
         }
+        widget.retryClickListener = {
+            interactor.loadMovieDetail(movieId)
+        }
 
         interactor.loadingListener = {
             widget.showLoading()

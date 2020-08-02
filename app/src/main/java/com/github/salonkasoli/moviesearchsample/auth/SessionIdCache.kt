@@ -2,6 +2,9 @@ package com.github.salonkasoli.moviesearchsample.auth
 
 import android.content.Context
 
+/**
+ * Дисковый кэш сессии юзера. Session Id по факту является авторизационным токеном.
+ */
 class SessionIdCache(
     context: Context
 ) {

@@ -28,8 +28,19 @@ class MovieDetailWidget(
     private val overviewDivider: View
 ) {
 
+    /**
+     * Дернется, если юзер нажмет "ПОВТОРИТЬ" во время показа ошибки загрузки.
+     */
     var retryClickListener: (() -> Unit)? = null
+
+    /**
+     * Дернется, если юзер захочет авторизоваться.
+     */
     var authClickListener: (() -> Unit)? = null
+
+    /**
+     * Дернется, когда юзер захочет оценить фильм. Это позволено только авторизованным юзерам.
+     */
     var rateClickListener: (() -> Unit)? = null
 
     private val badVoteColor = ContextCompat.getColor(
@@ -40,7 +51,6 @@ class MovieDetailWidget(
     )
     private val goodVoteColor = ContextCompat.getColor(
         movieDetailContainer.context, R.color.movie_detail_good_color
-
     )
 
     init {

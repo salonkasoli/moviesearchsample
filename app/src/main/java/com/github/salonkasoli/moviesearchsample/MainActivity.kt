@@ -15,6 +15,9 @@ import com.github.salonkasoli.moviesearchsample.search.ui.MoviesListWidget
 import com.github.salonkasoli.moviesearchsample.search.ui.SearchMovieToolbarWidget
 import retrofit2.Retrofit
 
+/**
+ * Экран с лентой фильмов.
+ */
 class MainActivity : AppCompatActivity(R.layout.activity_search) {
 
     private lateinit var controller: SearchMovieController

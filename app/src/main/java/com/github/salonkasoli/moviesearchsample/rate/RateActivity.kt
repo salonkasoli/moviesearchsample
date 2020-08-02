@@ -14,6 +14,9 @@ import com.github.salonkasoli.moviesearchsample.rate.api.RateInteractor
 import com.github.salonkasoli.moviesearchsample.rate.api.RateRepository
 import retrofit2.Retrofit
 
+/**
+ * Экран, на котором можно оценить фильм.
+ */
 class RateActivity : AppCompatActivity(R.layout.activity_rate) {
 
     override fun onCreate(savedInstanceState: Bundle?) {

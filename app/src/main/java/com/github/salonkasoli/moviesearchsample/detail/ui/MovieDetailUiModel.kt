@@ -11,6 +11,9 @@ data class MovieDetailUiModel(
     val posterUrl: String?,
     val averageVote: Float,
     val voteCount: Int,
+    /**
+     * Это либо число от 0 до 10, либо один из USER_VOTE_ значений.
+     */
     val userVote: Float
 ) {
 

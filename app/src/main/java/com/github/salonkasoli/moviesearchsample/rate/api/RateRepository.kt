@@ -1,7 +1,6 @@
 package com.github.salonkasoli.moviesearchsample.rate.api
 
 import android.content.Context
-import android.util.Log
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.core.api.*
@@ -24,8 +23,6 @@ class RateRepository(
             .rate(movieId, apiKey, sessionIdCache.getSessionId(), RateRequest(rate))
             .executeSafe()
 
-        Log.wtf("lol", "get rate result $result")
-
         if (result is ExecutionError) {
             return@withContext RepoError<RateResponse>(
                 result.exception
@@ -35,15 +32,12 @@ class RateRepository(
         val response: Response<RateResponse> = (result as ExecutionSuccess).response
 
         if (!response.isSuccessful || response.body() == null) {
-            Log.wtf("lol", "response = $response, body = ${response.body()}")
             return@withContext RepoError<RateResponse>(
                 IllegalStateException("response = $response, body = ${response.body()}")
             )
         }
 
         val rateResponse: RateResponse = response.body()!!
-
-        Log.wtf("lol", "get rate response $rateResponse")
 
         if (rateResponse.statusCode != 1) {
             return@withContext RepoError<RateResponse>(

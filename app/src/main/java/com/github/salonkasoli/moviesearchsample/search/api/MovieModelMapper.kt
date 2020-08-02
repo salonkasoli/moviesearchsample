@@ -4,13 +4,15 @@ import com.github.salonkasoli.moviesearchsample.configuration.Config
 import com.github.salonkasoli.moviesearchsample.genre.Genre
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
 
+/**
+ * Маппит [MovieNetworkModel] в [MovieUiModel].
+ */
 class MovieModelMapper(
     private val configuration: Config,
     private val genres: List<Genre>
 ) {
 
     private val posterPreviewUrlPrefix: String = getPosterPreviewUrlPrefix()
-    private val posterUrlPrefix: String = getPosterPreviewUrlPrefix()
 
     fun toUiModel(movieNetworkModel: MovieNetworkModel): MovieUiModel {
         return MovieUiModel(

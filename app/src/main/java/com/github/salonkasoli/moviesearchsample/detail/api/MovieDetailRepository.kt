@@ -1,7 +1,6 @@
 package com.github.salonkasoli.moviesearchsample.detail.api
 
 import android.content.Context
-import android.util.Log
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.core.api.*
@@ -34,15 +33,11 @@ class MovieDetailRepository(
 
         val response: Response<MovieDetailNetworkModel> = (res as ExecutionSuccess).response
 
-        Log.wtf("lol", "res = ${response.raw()}")
-
         if (!response.isSuccessful || response.body() == null) {
             return@withContext RepoError<MovieDetailNetworkModel>(
                 IllegalStateException("response = $response, body = ${response.body()}")
             )
         }
-
-        Log.wtf("lol", "got movie detail ${response.body()!!}")
 
         return@withContext RepoSuccess(
             response.body()!!

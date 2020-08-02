@@ -16,7 +16,18 @@ class PaginationController(
 
     var loadMoreListener: (() -> Unit)? = null
 
+    /**
+     * Работает ли вообще контроллер?
+     *
+     * Если false, то контроллер просто забивает на пагинацию.
+     */
     var isEnabled: Boolean = true
+
+    /**
+     * Происходит ли сейчас загрузка?
+     *
+     * Если true, то контроллер временно отключается, пока загрузка не завершится.
+     */
     var isLoading: Boolean = false
 
     init {

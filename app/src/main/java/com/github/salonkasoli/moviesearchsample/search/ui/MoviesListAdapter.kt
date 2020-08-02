@@ -1,6 +1,5 @@
 package com.github.salonkasoli.moviesearchsample.search.ui
 
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
@@ -21,42 +20,9 @@ class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         if (position < movies.size) {
-            h as MovieItemHolder
-
-            val movie: MovieUiModel = movies[position]
-            h.title.text = movie.title
-            h.year.text = movie.releaseDate
-            h.photo.setImageURI(movie.posterPreviewUrl)
-            h.photo.hierarchy.setFailureImage(R.drawable.ic_no_interner)
-            h.photo.hierarchy.setPlaceholderImage(R.drawable.ic_waiting)
-            h.genres.text = movie.genres.joinToString { genre: Genre -> genre.name }
-
-            h.itemView.setOnClickListener {
-                clickListener?.invoke(movie)
-            }
+            bindMovie(h as MovieItemHolder, movies[position])
         } else {
-            h as LoadingHolder
-            Log.wtf("lol", "binding loading, state = $loadingState")
-            when (loadingState) {
-                LoadingState.LOADING -> {
-                    Log.wtf("lol", "Loading")
-                    h.progressBar.visibility = View.VISIBLE
-                    h.errorText.visibility = View.GONE
-                    h.retryText.visibility = View.GONE
-                }
-                LoadingState.ERROR -> {
-                    Log.wtf("lol", "Error")
-                    h.progressBar.visibility = View.GONE
-                    h.errorText.visibility = View.VISIBLE
-                    h.retryText.visibility = View.VISIBLE
-                }
-                LoadingState.GONE -> {
-                    throw IllegalStateException("Loading holder while $loadingState")
-                }
-            }
-            h.retryText.setOnClickListener {
-                errorClickListener?.invoke()
-            }
+            bindLoading(h as LoadingHolder)
         }
     }
 
@@ -81,6 +47,40 @@ class MoviesListAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             movies.size
         } else {
             movies.size + 1
+        }
+    }
+
+    private fun bindMovie(h: MovieItemHolder, movie: MovieUiModel) {
+        h.title.text = movie.title
+        h.year.text = movie.releaseDate
+        h.photo.setImageURI(movie.posterPreviewUrl)
+        h.photo.hierarchy.setFailureImage(R.drawable.ic_no_interner)
+        h.photo.hierarchy.setPlaceholderImage(R.drawable.ic_waiting)
+        h.genres.text = movie.genres.joinToString { genre: Genre -> genre.name }
+
+        h.itemView.setOnClickListener {
+            clickListener?.invoke(movie)
+        }
+    }
+
+    private fun bindLoading(h: LoadingHolder) {
+        when (loadingState) {
+            LoadingState.LOADING -> {
+                h.progressBar.visibility = View.VISIBLE
+                h.errorText.visibility = View.GONE
+                h.retryText.visibility = View.GONE
+            }
+            LoadingState.ERROR -> {
+                h.progressBar.visibility = View.GONE
+                h.errorText.visibility = View.VISIBLE
+                h.retryText.visibility = View.VISIBLE
+            }
+            LoadingState.GONE -> {
+                throw IllegalStateException("Loading holder while $loadingState")
+            }
+        }
+        h.retryText.setOnClickListener {
+            errorClickListener?.invoke()
         }
     }
 

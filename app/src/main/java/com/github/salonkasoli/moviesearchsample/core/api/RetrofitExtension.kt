@@ -13,6 +13,9 @@ data class ExecutionError<T>(
     val exception: Exception
 ) : ExecutionResult<T>()
 
+/**
+ * Маленький экстеншн, чтобы ретрофит не крашился во время исполнения.
+ */
 fun <T> Call<T>.executeSafe(): ExecutionResult<T> {
     return try {
         ExecutionSuccess(

@@ -7,6 +7,11 @@ import androidx.annotation.IdRes
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 
+/**
+ * Вью холдер, которому можно передать лэйаут, а он сам его заинфлейтит.
+ *
+ * Есть полезная функция [BaseViewHolder.findView], позволяющая удобно искать вьюхи.
+ */
 open class BaseViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     constructor(parent: ViewGroup, @LayoutRes layoutRes: Int) : this(

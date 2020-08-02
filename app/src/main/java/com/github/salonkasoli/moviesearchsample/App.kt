@@ -5,6 +5,8 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class App : Application() {
 
@@ -16,6 +18,13 @@ class App : Application() {
         put(MovieListCache())
         put(MovieDetailCache())
         put(SessionIdCache(this))
+
+        put(
+            Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(Const.MOVIE_DB_URL)
+                .build()
+        )
     }
 
     companion object {
@@ -27,7 +36,7 @@ class App : Application() {
             deps[any::class.java] = any
         }
 
-        fun <T> get(clazz: Class<T>) : T {
+        fun <T> get(clazz: Class<T>): T {
             return deps[clazz] as T
         }
     }

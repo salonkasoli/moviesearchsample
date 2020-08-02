@@ -13,6 +13,7 @@ import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchMapperFact
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
 import com.github.salonkasoli.moviesearchsample.search.ui.MoviesListWidget
 import com.github.salonkasoli.moviesearchsample.search.ui.SearchMovieToolbarWidget
+import retrofit2.Retrofit
 
 class MainActivity : AppCompatActivity(R.layout.activity_search) {
 
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val cache: MovieListCache = App.get(MovieListCache::class.java)
+        val retrofit: Retrofit = App.get(Retrofit::class.java)
         controller = SearchMovieController(
             MoviesListWidget(
                 findViewById(R.id.list),
@@ -33,10 +35,10 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
             cache,
             SearchMovieInteractor(
                 lifecycleScope,
-                MovieSearchRepository(this),
+                MovieSearchRepository(retrofit, this),
                 MovieSearchMapperFactory(
-                    ConfigRepository(this),
-                    GenresRepository(this)
+                    ConfigRepository(retrofit, this),
+                    GenresRepository(retrofit, this)
                 ),
                 cache
             ),

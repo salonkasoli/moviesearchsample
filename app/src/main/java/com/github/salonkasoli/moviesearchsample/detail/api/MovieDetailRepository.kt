@@ -2,7 +2,6 @@ package com.github.salonkasoli.moviesearchsample.detail.api
 
 import android.content.Context
 import android.util.Log
-import com.github.salonkasoli.moviesearchsample.Const
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.core.api.*
@@ -10,19 +9,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class MovieDetailRepository(
+    private val retrofit: Retrofit,
     context: Context,
     private val sessionIdCache: SessionIdCache
 ) {
 
     private val apiKey = context.getString(R.string.moviedb_api_key)
-
-    private val retrofit = Retrofit.Builder()
-        .addConverterFactory(GsonConverterFactory.create())
-        .baseUrl(Const.MOVIE_DB_URL)
-        .build()
 
     suspend fun getMovieDetails(
         id: Int

@@ -12,6 +12,7 @@ import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.rate.api.RateInteractor
 import com.github.salonkasoli.moviesearchsample.rate.api.RateRepository
+import retrofit2.Retrofit
 
 class RateActivity : AppCompatActivity(R.layout.activity_rate) {
 
@@ -27,7 +28,11 @@ class RateActivity : AppCompatActivity(R.layout.activity_rate) {
                 savedStateRegistry
             ),
             RateInteractor(
-                RateRepository(this, App.get(SessionIdCache::class.java)),
+                RateRepository(
+                    App.get(Retrofit::class.java),
+                    this,
+                    App.get(SessionIdCache::class.java)
+                ),
                 lifecycleScope
             ),
             App.get(MovieDetailCache::class.java),

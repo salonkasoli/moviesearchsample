@@ -14,11 +14,13 @@ import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRep
 import com.github.salonkasoli.moviesearchsample.auth.token.newly.NewTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
+import retrofit2.Retrofit
 
 class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val retrofit: Retrofit = App.get(Retrofit::class.java)
         AuthController(
             AuthWidget(
                 findViewById(R.id.credentials_container),
@@ -28,9 +30,9 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
                 findViewById(R.id.progress_bar)
             ),
             SessionInteractor(
-                NewTokenRepository(this),
-                AuthedTokenRepository(this),
-                SessionRepository(this),
+                NewTokenRepository(retrofit, this),
+                AuthedTokenRepository(retrofit, this),
+                SessionRepository(retrofit, this),
                 App.get(SessionIdCache::class.java),
                 lifecycleScope
             ),

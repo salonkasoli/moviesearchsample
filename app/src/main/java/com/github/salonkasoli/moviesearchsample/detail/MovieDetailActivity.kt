@@ -13,11 +13,13 @@ import com.github.salonkasoli.moviesearchsample.configuration.ConfigRepository
 import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
 import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailModelMapperFactory
 import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailRepository
+import retrofit2.Retrofit
 
 class MovieDetailActivity : AppCompatActivity(R.layout.activity_movie_detail) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val retrofit: Retrofit = App.get(Retrofit::class.java)
         MovieDetailController(
             MovieDetailWidget(
                 LoadingWidget(findViewById(R.id.loading_container)),
@@ -33,8 +35,12 @@ class MovieDetailActivity : AppCompatActivity(R.layout.activity_movie_detail) {
                 findViewById(R.id.overview_divider)
             ),
             MovieDetailInteractor(
-                MovieDetailRepository(this, App.get(SessionIdCache::class.java)),
-                MovieDetailModelMapperFactory(ConfigRepository(this)),
+                MovieDetailRepository(
+                    retrofit,
+                    this,
+                    App.get(SessionIdCache::class.java)
+                ),
+                MovieDetailModelMapperFactory(ConfigRepository(retrofit, this)),
                 lifecycleScope,
                 App.get(MovieDetailCache::class.java)
             ),

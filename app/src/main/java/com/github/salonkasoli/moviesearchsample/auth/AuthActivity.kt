@@ -5,16 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.github.salonkasoli.moviesearchsample.App
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.auth.session.SessionInteractor
-import com.github.salonkasoli.moviesearchsample.auth.session.SessionRepository
-import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRepository
-import com.github.salonkasoli.moviesearchsample.auth.token.newly.NewTokenRepository
-import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
-import retrofit2.Retrofit
+import com.github.salonkasoli.moviesearchsample.di.AuthComponent
+import com.github.salonkasoli.moviesearchsample.di.module.AuthUiModule
 
 /**
  * Экран, на котором юзер может авторизоваться.
@@ -23,28 +17,14 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val retrofit: Retrofit = App.get(Retrofit::class.java)
-        AuthController(
-            AuthWidget(
-                findViewById(R.id.credentials_container),
-                findViewById(R.id.login),
-                findViewById(R.id.password),
-                findViewById(R.id.login_button),
-                findViewById(R.id.progress_bar)
-            ),
-            SessionInteractor(
-                NewTokenRepository(retrofit, this),
-                AuthedTokenRepository(retrofit, this),
-                SessionRepository(retrofit, this),
-                App.get(SessionIdCache::class.java),
-                lifecycleScope
-            ),
-            App.get(MovieDetailCache::class.java),
-            this
-        )
-        setSupportActionBar(findViewById(R.id.toolbar))
-        supportActionBar?.title = "Авторизация"
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val authComponent: AuthComponent = App.instance.appComponent
+            .authComponent()
+            .create(AuthUiModule(this))
+
+        authComponent.controller()
+
+        initToolbar()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -53,6 +33,12 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun initToolbar() {
+        setSupportActionBar(findViewById(R.id.toolbar))
+        supportActionBar?.title = "Авторизация"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     companion object {

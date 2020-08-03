@@ -71,7 +71,9 @@ class SessionInteractor(
 
         withContext(Dispatchers.Main) {
             when (sessionResponse) {
-                is RepoError -> errorListener?.invoke()
+                is RepoError -> {
+                    errorListener?.invoke()
+                }
                 is RepoSuccess -> {
                     sessionIdCache.setSessionId(sessionResponse.data.sessionId)
                     successListener?.invoke()

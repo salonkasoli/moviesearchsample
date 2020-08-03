@@ -4,11 +4,18 @@ import android.app.Application
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
+import com.github.salonkasoli.moviesearchsample.di.AppComponent
+import com.github.salonkasoli.moviesearchsample.di.DaggerAppComponent
+import com.github.salonkasoli.moviesearchsample.di.module.AppModule
+import com.github.salonkasoli.moviesearchsample.di.module.AuthDataModule
+import com.github.salonkasoli.moviesearchsample.di.module.IOModule
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class App : Application() {
+
+    lateinit var appComponent: AppComponent
 
     override fun onCreate() {
         super.onCreate()
@@ -25,6 +32,12 @@ class App : Application() {
                 .baseUrl(Const.MOVIE_DB_URL)
                 .build()
         )
+
+        appComponent = DaggerAppComponent.builder()
+            .iOModule(IOModule(this))
+            .appModule(AppModule(this))
+            .authDataModule(AuthDataModule(this))
+            .build()
     }
 
     companion object {

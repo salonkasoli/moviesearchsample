@@ -4,8 +4,9 @@ import android.app.Activity
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionInteractor
 import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
+import javax.inject.Inject
 
-class AuthController(
+class AuthController @Inject constructor(
     private val authWidget: AuthWidget,
     private val sessionInteractor: SessionInteractor,
     private val movieDetailCache: MovieDetailCache,

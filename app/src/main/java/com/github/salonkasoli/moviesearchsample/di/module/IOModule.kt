@@ -1,6 +1,5 @@
 package com.github.salonkasoli.moviesearchsample.di.module
 
-import android.content.Context
 import com.github.salonkasoli.moviesearchsample.Const
 import com.google.gson.Gson
 import dagger.Module
@@ -10,9 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-class IOModule(
-    context: Context
-) {
+class IOModule {
 
     @Provides
     @Singleton
@@ -28,5 +25,4 @@ class IOModule(
             .baseUrl(Const.MOVIE_DB_URL)
             .build()
     }
-
 }

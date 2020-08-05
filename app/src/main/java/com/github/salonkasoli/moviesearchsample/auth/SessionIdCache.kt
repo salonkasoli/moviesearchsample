@@ -1,11 +1,14 @@
 package com.github.salonkasoli.moviesearchsample.auth
 
 import android.content.Context
+import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Дисковый кэш сессии юзера. Session Id по факту является авторизационным токеном.
  */
-class SessionIdCache(
+@Singleton
+class SessionIdCache @Inject constructor(
     context: Context
 ) {
 

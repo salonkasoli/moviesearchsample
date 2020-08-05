@@ -13,6 +13,7 @@ import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchMapperFact
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
 import com.github.salonkasoli.moviesearchsample.search.ui.MoviesListWidget
 import com.github.salonkasoli.moviesearchsample.search.ui.SearchMovieToolbarWidget
+import com.google.gson.Gson
 import retrofit2.Retrofit
 
 /**
@@ -40,8 +41,8 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
                 lifecycleScope,
                 MovieSearchRepository(retrofit, this),
                 MovieSearchMapperFactory(
-                    ConfigRepository(retrofit, this),
-                    GenresRepository(retrofit, this)
+                    ConfigRepository(retrofit, this, Gson()),
+                    GenresRepository(retrofit, this, Gson())
                 ),
                 cache
             ),

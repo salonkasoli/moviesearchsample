@@ -7,7 +7,6 @@ import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.di.AppComponent
 import com.github.salonkasoli.moviesearchsample.di.DaggerAppComponent
 import com.github.salonkasoli.moviesearchsample.di.module.AppModule
-import com.github.salonkasoli.moviesearchsample.di.module.AuthDataModule
 import com.github.salonkasoli.moviesearchsample.di.module.IOModule
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 import retrofit2.Retrofit
@@ -34,9 +33,8 @@ class App : Application() {
         )
 
         appComponent = DaggerAppComponent.builder()
-            .iOModule(IOModule(this))
+            .iOModule(IOModule())
             .appModule(AppModule(this))
-            .authDataModule(AuthDataModule(this))
             .build()
     }
 

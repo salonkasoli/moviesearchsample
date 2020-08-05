@@ -8,8 +8,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MovieDetailRepository(
+@Singleton
+class MovieDetailRepository @Inject constructor(
     private val retrofit: Retrofit,
     context: Context,
     private val sessionIdCache: SessionIdCache

@@ -5,15 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
 import com.github.salonkasoli.moviesearchsample.App
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
-import com.github.salonkasoli.moviesearchsample.configuration.ConfigRepository
-import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
-import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailModelMapperFactory
-import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailRepository
-import retrofit2.Retrofit
+import com.github.salonkasoli.moviesearchsample.di.module.MovieDetailUiModule
 
 /**
  * Экран, на котором можно посмотреть детальную инфомрацию о фильме.
@@ -22,35 +16,12 @@ class MovieDetailActivity : AppCompatActivity(R.layout.activity_movie_detail) {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val retrofit: Retrofit = App.get(Retrofit::class.java)
-        MovieDetailController(
-            MovieDetailWidget(
-                LoadingWidget(findViewById(R.id.loading_container)),
-                findViewById(R.id.movie_detail_container),
-                findViewById(R.id.photo),
-                findViewById(R.id.title),
-                findViewById(R.id.year),
-                findViewById(R.id.genres),
-                findViewById(R.id.vote),
-                findViewById(R.id.user_vote),
-                findViewById(R.id.divider_vote),
-                findViewById(R.id.overview),
-                findViewById(R.id.overview_divider)
-            ),
-            MovieDetailInteractor(
-                MovieDetailRepository(
-                    retrofit,
-                    this,
-                    App.get(SessionIdCache::class.java)
-                ),
-                MovieDetailModelMapperFactory(ConfigRepository(retrofit, this)),
-                lifecycleScope,
-                App.get(MovieDetailCache::class.java)
-            ),
-            intent.getIntExtra(EXTRA_MOVIE_ID, -1),
-            this,
-            lifecycle
-        )
+
+        val movieId: Int = intent.getIntExtra(EXTRA_MOVIE_ID, -1)
+        App.instance.appComponent.movieDetailComponent()
+            .create(MovieDetailUiModule(this, movieId))
+            .controller()
+
         setSupportActionBar(findViewById(R.id.toolbar))
         supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)

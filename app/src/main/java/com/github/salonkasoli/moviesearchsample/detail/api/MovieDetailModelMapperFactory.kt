@@ -7,8 +7,9 @@ import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
 import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MovieDetailModelMapperFactory(
+class MovieDetailModelMapperFactory @Inject constructor(
     private val configRepository: ConfigRepository
 ) {
 

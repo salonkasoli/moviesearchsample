@@ -9,11 +9,14 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class ConfigRepository(
+@Singleton
+class ConfigRepository @Inject constructor(
     private val retrofit: Retrofit,
     context: Context,
-    private val gson: Gson = Gson()
+    private val gson: Gson
 ) {
 
     // TODO

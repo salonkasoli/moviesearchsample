@@ -11,8 +11,9 @@ import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailRepository
 import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MovieDetailInteractor(
+class MovieDetailInteractor @Inject constructor(
     private val movieDetailRepository: MovieDetailRepository,
     private val mapperFactory: MovieDetailModelMapperFactory,
     private val lifecycleCoroutineScope: LifecycleCoroutineScope,

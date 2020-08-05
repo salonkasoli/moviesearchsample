@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 /**
  * Репозиторий, позволяющий получить жанры фильмов (см. [Genre]).
@@ -16,10 +17,10 @@ import java.util.concurrent.TimeUnit
  * Некоторые АПИ возвращают только id жанров. Для того, чтобы мы смогли показзать юзеру жанры
  * фильмов необходимо заблаговременно их запросить.
  */
-class GenresRepository(
+class GenresRepository @Inject constructor(
     private val retrofit: Retrofit,
     context: Context,
-    private val gson: Gson = Gson()
+    private val gson: Gson
 ) {
     // TODO
     // Сделать так, чтобы кэш обновлялся отдельно от получения. Мб на старте приложения?

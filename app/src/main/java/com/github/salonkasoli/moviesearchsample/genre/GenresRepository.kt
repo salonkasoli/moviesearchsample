@@ -10,6 +10,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Singleton
 
 /**
  * Репозиторий, позволяющий получить жанры фильмов (см. [Genre]).
@@ -17,6 +18,7 @@ import javax.inject.Inject
  * Некоторые АПИ возвращают только id жанров. Для того, чтобы мы смогли показзать юзеру жанры
  * фильмов необходимо заблаговременно их запросить.
  */
+@Singleton
 class GenresRepository @Inject constructor(
     private val retrofit: Retrofit,
     context: Context,

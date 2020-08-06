@@ -9,8 +9,10 @@ import com.github.salonkasoli.moviesearchsample.genre.GenreResponse
 import com.github.salonkasoli.moviesearchsample.genre.GenresRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class MovieSearchMapperFactory(
+
+class MovieSearchMapperFactory @Inject constructor(
     private val configRepository: ConfigRepository,
     private val genresRepository: GenresRepository
 ) {

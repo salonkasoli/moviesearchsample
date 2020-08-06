@@ -11,6 +11,10 @@ import com.github.salonkasoli.moviesearchsample.di.module.IOModule
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.get
+import kotlin.collections.set
 
 class App : Application() {
 
@@ -25,6 +29,8 @@ class App : Application() {
         put(MovieDetailCache())
         put(SessionIdCache(this))
 
+        val a = ArrayList<Int>()
+        a.remove(1)
         put(
             Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())

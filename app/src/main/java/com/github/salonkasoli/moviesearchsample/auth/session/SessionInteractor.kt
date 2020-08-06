@@ -11,6 +11,7 @@ import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
 import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * Интерактор, с помощью которого можно залогиниться в приложении.
@@ -22,7 +23,7 @@ import kotlinx.coroutines.withContext
  *
  * Далее session id это токен, с которым будем ходить к остальным АПИ.
  */
-class SessionInteractor(
+class SessionInteractor @Inject constructor(
     private val newTokenRepository: NewTokenRepository,
     private val authedTokenRepository: AuthedTokenRepository,
     private val sessionRepository: SessionRepository,

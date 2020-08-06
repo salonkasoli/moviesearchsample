@@ -12,8 +12,9 @@ import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchState
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class SearchMovieInteractor(
+class SearchMovieInteractor @Inject constructor(
     private val scope: LifecycleCoroutineScope,
     private val movieRepository: MovieSearchRepository,
     private val mapperFactory: MovieSearchMapperFactory,

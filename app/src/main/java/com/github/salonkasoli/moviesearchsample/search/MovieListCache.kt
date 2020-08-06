@@ -2,8 +2,11 @@ package com.github.salonkasoli.moviesearchsample.search
 
 import android.util.LruCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchState
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class MovieListCache {
+@Singleton
+class MovieListCache @Inject constructor() {
 
     private val lruCache = LruCache<String, MovieSearchState>(10)
 
@@ -11,7 +14,7 @@ class MovieListCache {
         lruCache.put(query, state)
     }
 
-    fun get(query: String) : MovieSearchState {
+    fun get(query: String): MovieSearchState {
         val state: MovieSearchState? = lruCache.get(query)
         if (state != null) {
             return state

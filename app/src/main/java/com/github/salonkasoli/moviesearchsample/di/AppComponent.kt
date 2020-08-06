@@ -19,4 +19,5 @@ interface AppComponent {
     fun authComponent(): AuthComponent.Factory
     fun movieDetailComponent(): MovieDetailComponent.Factory
     fun movieSearchComponent(): MovieSearchComponent.Factory
+    fun rateComponent(): RateComponent.Factory
 }

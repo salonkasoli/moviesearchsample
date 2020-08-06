@@ -8,8 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
+import javax.inject.Inject
 
-class RateRepository(
+class RateRepository @Inject constructor(
     private val retrofit: Retrofit,
     context: Context,
     private val sessionIdCache: SessionIdCache

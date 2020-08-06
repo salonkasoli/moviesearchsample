@@ -5,8 +5,9 @@ import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
 import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RateInteractor(
+class RateInteractor @Inject constructor(
     private val rateRepository: RateRepository,
     private val lifecycleCoroutineScope: LifecycleCoroutineScope
 ) {

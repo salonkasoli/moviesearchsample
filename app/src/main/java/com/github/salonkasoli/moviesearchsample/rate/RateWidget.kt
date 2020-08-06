@@ -49,6 +49,11 @@ class RateWidget(
             }
         })
 
+        show()
+    }
+
+    fun show() {
+        seekBarContainer.visibility = View.VISIBLE
         loadingWidget.hide()
     }
 
@@ -70,8 +75,8 @@ class RateWidget(
 
     private fun getRate(progress: Int): Float {
         // 0 - 10 округляем до 0,5.
-        val progress: Float = Math.round((progress / 10f) * 2) / 2f
-        return Math.max(0.5f, progress)
+        val normalizedProgress: Float = Math.round((progress / 10f) * 2) / 2f
+        return Math.max(0.5f, normalizedProgress)
     }
 
     companion object {

@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.App
 import com.github.salonkasoli.moviesearchsample.R
+import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
 import com.github.salonkasoli.moviesearchsample.di.module.RateUiModule
 
@@ -31,15 +32,15 @@ class RateActivity : AppCompatActivity(R.layout.activity_rate) {
             viewModel.rateMovie(movieId, rate)
         }
 
-        viewModel.state.observe(this, Observer { state: RateViewModel.LoadingState ->
+        viewModel.state.observe(this, Observer { state: LoadingState ->
             when (state) {
-                RateViewModel.LoadingState.WATINIG -> {
+                LoadingState.WAITINIG, LoadingState.ERROR -> {
                     widget.show()
                 }
-                RateViewModel.LoadingState.LOADING -> {
+                LoadingState.LOADING -> {
                     widget.showLoading()
                 }
-                RateViewModel.LoadingState.SUCCESS -> {
+                LoadingState.SUCCESS -> {
                     finish()
                 }
             }

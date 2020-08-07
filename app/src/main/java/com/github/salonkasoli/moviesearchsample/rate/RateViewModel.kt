@@ -5,6 +5,7 @@ import androidx.lifecycle.*
 import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
 import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
+import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.rate.api.RateRepository
@@ -49,13 +50,9 @@ class RateViewModel(
             }
             else -> {
                 _errorEvent.postValue(SimpleEvent())
-                _state.postValue(LoadingState.WATINIG)
+                _state.postValue(LoadingState.WAITINIG)
             }
         }
-    }
-
-    enum class LoadingState {
-        WATINIG, LOADING, SUCCESS
     }
 
     class Factory @Inject constructor(

@@ -1,4 +1,4 @@
-package com.github.salonkasoli.moviesearchsample.detail
+package com.github.salonkasoli.moviesearchsample.detail.ui
 
 import android.graphics.Typeface
 import android.text.Spannable
@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import com.facebook.drawee.view.SimpleDraweeView
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
-import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
 import com.github.salonkasoli.moviesearchsample.genre.Genre
 
 class MovieDetailWidget(

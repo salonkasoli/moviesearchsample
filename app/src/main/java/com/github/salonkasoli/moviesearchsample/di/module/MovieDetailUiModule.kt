@@ -1,13 +1,10 @@
 package com.github.salonkasoli.moviesearchsample.di.module
 
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.lifecycleScope
+import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailActivity
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailController
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailInteractor
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailWidget
+import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailWidget
 import dagger.Module
 import dagger.Provides
 
@@ -18,22 +15,8 @@ class MovieDetailUiModule(
 ) {
 
     @Provides
-    fun lifecycleScope(): LifecycleCoroutineScope {
-        return activity.lifecycleScope
-    }
-
-    @Provides
-    fun controller(
-        widget: MovieDetailWidget,
-        interactor: MovieDetailInteractor
-    ): MovieDetailController {
-        return MovieDetailController(
-            widget,
-            interactor,
-            movieId,
-            activity,
-            activity.lifecycle
-        )
+    fun movieId(): Int {
+        return movieId
     }
 
     @Provides
@@ -53,4 +36,8 @@ class MovieDetailUiModule(
         )
     }
 
+    @Provides
+    fun savedStateRegistry(): SavedStateRegistry {
+        return activity.savedStateRegistry
+    }
 }

@@ -4,9 +4,12 @@ package com.github.salonkasoli.moviesearchsample.core.mvvm
 /**
  * Штука, чтобы удобно было работать с liveDatой + ивентами
  */
-open class Event<out T>(private val content: T) {
+open class Event<out T>(
+    private val content: T,
+    initialHandled: Boolean = false
+) {
 
-    var hasBeenHandled = false
+    var hasBeenHandled = initialHandled
         private set
 
     fun handle(): T? {
@@ -21,4 +24,4 @@ open class Event<out T>(private val content: T) {
     fun getContent(): T = content
 }
 
-class SimpleEvent : Event<Unit>(Unit)
+class SimpleEvent(initialHandled: Boolean = false) : Event<Unit>(Unit, initialHandled)

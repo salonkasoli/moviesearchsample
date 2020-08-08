@@ -5,29 +5,35 @@
 
 Библиотеки, использованные в проекте:
 *  [Dagger2](https://github.com/google/dagger) для dependency injection
-*  [Retrofit2](https://github.com/square/retrofit) для запросов к АПИ.
+*  Реализация [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) от гугла.
 *  Coroutines + Architecture components для работы в фоне [(ссылка)](https://developer.android.com/topic/libraries/architecture/coroutines).
+*  [Retrofit2](https://github.com/square/retrofit) для запросов к АПИ.
 *  [Fresco](https://github.com/facebook/fresco) загрузки и отображения картинок.
 
-Основные элементы архитектуры:
-*  *Repository* - элемент, отвечающий за загрузку данных.
-*  *Interactor* отвечает за вызов методов репозитория на корректном треде. Предоставляет наружу контракт для подписки на результат.
+В проекте используется архитектура **MVVM**. Основные элементы архитектуры:  
+*  *Repository* - элемент, отвечающий за загрузку конкретных данных.
+*  *ViewModel* - дергает репозитории, проставляет результат их работы в *LiveData*.
 *  *Widget* - глупая абстракция над view. Предоставляет контракт "что показать", а сама решает "как показать".
-*  *Controller* связывает виджет с интерактором. Реагирует на события виджета и говорит ему, как показать загруженные данные.
+*  *Activity* - точка входа в функционал. Подписывает *Widget* на *ViewModel*. Реагирует на события *Widget*, вызывает соответствующие методы *ViewModel*.
 
 **Архитектура DI**
 
 *AppComponent* это основной компонент в приложении. Создает и хранит все глобальные зависимости.  
 Для каждого экрана существует *ScreenNameComponent*, являющийся сабкомпонентом *AppComponent*.
 Активити получает основной компонент с помощью сервис локатора *App.instance.appComponent*,
-а затем создает свой компонент с помощью фабрики сабкомпонента, у которого можно получить зависимости:
+а затем создает свой компонент с помощью фабрики сабкомпонента. Зависимости получает так:
 ```kotlin
-controller = App.instance.appComponent.movieSearchComponent()
+val widget = App.instance.appComponent.movieSearchComponent()
     .create(MovieSearchUiModule(this))
-    .controller()
+    .widget()
 ```
+
+**Проблемы, пришедшие с ViewModel**
+
+Пропало нормально сохранение состояний (врубаем галочку dont keep activities и грустим).  
+Попробовать заиспользовать [официальное решение](https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate).
+
 
 **TODO**
 
 *  Попробовать RxJava2
-*  Попробовать ViewModel

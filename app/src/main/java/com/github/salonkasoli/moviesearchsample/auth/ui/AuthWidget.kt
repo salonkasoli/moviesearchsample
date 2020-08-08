@@ -42,14 +42,18 @@ class AuthWidget(
         }
     }
 
+    fun show() {
+        container.visibility = View.VISIBLE
+        progressBar.visibility = View.GONE
+    }
+
     fun showLoading() {
         container.visibility = View.GONE
         progressBar.visibility = View.VISIBLE
     }
 
     fun showError() {
-        container.visibility = View.VISIBLE
-        progressBar.visibility = View.GONE
+        show()
         Toast.makeText(container.context, "Ошибка", Toast.LENGTH_SHORT).show()
     }
 }

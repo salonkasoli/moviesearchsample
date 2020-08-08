@@ -5,8 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.App
 import com.github.salonkasoli.moviesearchsample.R
+import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
+import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
+import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
 import com.github.salonkasoli.moviesearchsample.di.AuthComponent
 import com.github.salonkasoli.moviesearchsample.di.module.AuthUiModule
 
@@ -22,7 +27,34 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
             .authComponent()
             .create(AuthUiModule(this))
 
-        authComponent.controller()
+        val widget: AuthWidget = authComponent.widget()
+        val viewModel: AuthViewModel = ViewModelProvider(this, authComponent.vmFactory())
+            .get(AuthViewModel::class.java)
+
+        widget.authClickListener = { login: String, password: String ->
+            viewModel.createSessionId(login, password)
+        }
+        viewModel.loadingState.observe(this, Observer { loadingState: LoadingState ->
+            when (loadingState) {
+                LoadingState.WAITINIG -> {
+                    widget.show()
+                }
+                LoadingState.LOADING -> {
+                    widget.showLoading()
+                }
+                LoadingState.SUCCESS -> {
+                    finish()
+                }
+                LoadingState.ERROR -> {
+                    throw IllegalStateException("Unexpected loading state $loadingState")
+                }
+            }
+        })
+        viewModel.errorEvent.observe(this, Observer { event: SimpleEvent ->
+            event.handle()?.let {
+                widget.showError()
+            }
+        })
 
         initToolbar()
     }

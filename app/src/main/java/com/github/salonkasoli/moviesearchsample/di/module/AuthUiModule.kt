@@ -1,13 +1,9 @@
 package com.github.salonkasoli.moviesearchsample.di.module
 
-import androidx.lifecycle.LifecycleCoroutineScope
-import androidx.lifecycle.lifecycleScope
+import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.AuthActivity
-import com.github.salonkasoli.moviesearchsample.auth.AuthController
-import com.github.salonkasoli.moviesearchsample.auth.session.SessionInteractor
 import com.github.salonkasoli.moviesearchsample.auth.ui.AuthWidget
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import dagger.Module
 import dagger.Provides
 
@@ -17,17 +13,8 @@ class AuthUiModule(
 ) {
 
     @Provides
-    fun controller(
-        widget: AuthWidget,
-        interactor: SessionInteractor,
-        movieDetailCache: MovieDetailCache
-    ): AuthController {
-        return AuthController(
-            widget,
-            interactor,
-            movieDetailCache,
-            activity
-        )
+    fun savedStateRegistry(): SavedStateRegistry {
+        return activity.savedStateRegistry
     }
 
     @Provides
@@ -39,10 +26,5 @@ class AuthUiModule(
             activity.findViewById(R.id.login_button),
             activity.findViewById(R.id.progress_bar)
         )
-    }
-
-    @Provides
-    fun lifecycleScope(): LifecycleCoroutineScope {
-        return activity.lifecycleScope
     }
 }

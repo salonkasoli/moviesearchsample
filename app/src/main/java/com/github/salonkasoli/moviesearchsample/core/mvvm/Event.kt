@@ -9,7 +9,7 @@ open class Event<out T>(
     initialHandled: Boolean = false
 ) {
 
-    var hasBeenHandled = initialHandled
+    var hasBeenHandled: Boolean = initialHandled
         private set
 
     fun handle(): T? {

@@ -14,6 +14,7 @@ import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+// TODO добавить сохранение стейта
 class MovieDetailViewModel(
     private val movieId: Int,
     private val cache: MovieDetailCache,

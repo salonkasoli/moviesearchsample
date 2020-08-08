@@ -1,14 +1,17 @@
 package com.github.salonkasoli.moviesearchsample.rate
 
-import androidx.lifecycle.*
-import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
-import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.rate.api.RateRepository
 import com.github.salonkasoli.moviesearchsample.rate.api.RateResponse
-import kotlinx.coroutines.launch
+import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class RateViewModel(
@@ -24,19 +27,30 @@ class RateViewModel(
     private val _state = MutableLiveData<LoadingState>()
     private val _errorEvent = MutableLiveData<SimpleEvent>()
 
-    fun rateMovie(movieId: Int, rate: Float) = viewModelScope.launch {
-        _state.postValue(LoadingState.LOADING)
-        val tokenResponse: RepoResponse<RateResponse> = rateRepository.getSession(movieId, rate)
-        when (tokenResponse) {
-            is RepoSuccess -> {
-                movieDetailCache.clear()
-                _state.postValue(LoadingState.SUCCESS)
-            }
-            else -> {
-                _errorEvent.postValue(SimpleEvent())
-                _state.postValue(LoadingState.WAITING)
-            }
-        }
+    private val compositeDisposable = CompositeDisposable()
+
+    fun rateMovie(movieId: Int, rate: Float) {
+        val disposable = Single.create<RateResponse>({ emitter ->
+            emitter.onSuccess(rateRepository.postRate(movieId, rate))
+        })
+            .doOnSuccess { _state.postValue(LoadingState.LOADING) }
+            .subscribeOn(Schedulers.io())
+            .subscribe(
+                { response: RateResponse? ->
+                    movieDetailCache.clear()
+                    _state.postValue(LoadingState.SUCCESS)
+                },
+                {
+                    _errorEvent.postValue(SimpleEvent())
+                    _state.postValue(LoadingState.WAITING)
+                }
+            )
+        compositeDisposable.add(disposable)
+    }
+
+    override fun onCleared() {
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 
     class Factory @Inject constructor(

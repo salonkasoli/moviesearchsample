@@ -1,7 +1,6 @@
 package com.github.salonkasoli.moviesearchsample
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -44,7 +43,6 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
         }
 
         viewModel.state.observe(this, Observer { state: MovieSearchUiState ->
-            Log.wtf("lol", "new state = $state")
             val movies: List<MovieUiModel> = state.movies
             when (state.loadingState) {
                 LoadingState.WAITING -> {

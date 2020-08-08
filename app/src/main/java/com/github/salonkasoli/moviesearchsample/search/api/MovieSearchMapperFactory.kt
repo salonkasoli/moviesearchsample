@@ -25,11 +25,7 @@ class MovieSearchMapperFactory @Inject constructor(
      * @return Маппер или null, если не удалось получить конфигурацию АПИ.
      */
     suspend fun createMapper(): MovieModelMapper? = withContext(Dispatchers.IO) {
-        val configResponse: RepoResponse<Config> = configRepository.getConfig()
-        if (configResponse is RepoError) {
-            return@withContext null
-        }
-        configResponse as RepoSuccess
+        val config: Config = configRepository.getConfig()
 
         val genresResponse: RepoResponse<GenreResponse> = genresRepository.getMovieGenres()
         if (genresResponse is RepoError) {
@@ -38,7 +34,7 @@ class MovieSearchMapperFactory @Inject constructor(
         genresResponse as RepoSuccess
 
         return@withContext MovieModelMapper(
-            configResponse.data,
+            config,
             genresResponse.data.genres
         )
     }

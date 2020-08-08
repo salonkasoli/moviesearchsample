@@ -2,10 +2,7 @@ package com.github.salonkasoli.moviesearchsample.configuration
 
 import android.content.Context
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.core.api.*
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -29,29 +26,18 @@ class ConfigRepository @Inject constructor(
      * @return Конфигурацию АПИ. Она понадобится, например, для формирования урлов к фоткам.
      * Конфигурацию хранится в кэше и обновляется раз в 24 часа.
      */
-    suspend fun getConfig(): RepoResponse<Config> = withContext(Dispatchers.IO) {
+    @Throws
+    fun getConfig(): Config {
         getCachedConfig()?.let { config: Config ->
-            return@withContext RepoSuccess(
-                config
-            )
+            return config
         }
 
-        val result: ExecutionResult<Config> = retrofit.create(ConfigApi::class.java)
+        val response: Response<Config> = retrofit.create(ConfigApi::class.java)
             .getConfiguration(apiKey)
-            .executeSafe()
-
-        if (result is ExecutionError) {
-            return@withContext RepoError<Config>(
-                result.exception
-            )
-        }
-
-        val response: Response<Config> = (result as ExecutionSuccess).response
+            .execute()
 
         if (!response.isSuccessful || response.body() == null) {
-            return@withContext RepoError<Config>(
-                IllegalStateException("response = $response, body = ${response.body()}")
-            )
+            throw IllegalStateException("response = $response, body = ${response.body()}")
         }
 
         val config: Config = response.body()!!
@@ -60,9 +46,7 @@ class ConfigRepository @Inject constructor(
             .putLong(PREF_LAST_UPDATE_TIME, System.currentTimeMillis())
             .apply()
 
-        return@withContext RepoSuccess(
-            config
-        )
+        return config
     }
 
     private fun getCachedConfig(): Config? {

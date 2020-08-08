@@ -31,9 +31,9 @@ class RateViewModel(
 
     fun rateMovie(movieId: Int, rate: Float) {
         val disposable = Single.create<RateResponse>({ emitter ->
+            _state.postValue(LoadingState.LOADING)
             emitter.onSuccess(rateRepository.postRate(movieId, rate))
         })
-            .doOnSuccess { _state.postValue(LoadingState.LOADING) }
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { response: RateResponse? ->

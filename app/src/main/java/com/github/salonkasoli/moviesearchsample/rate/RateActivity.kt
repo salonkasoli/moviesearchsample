@@ -34,7 +34,7 @@ class RateActivity : AppCompatActivity(R.layout.activity_rate) {
 
         viewModel.state.observe(this, Observer { state: LoadingState ->
             when (state) {
-                LoadingState.WAITINIG, LoadingState.ERROR -> {
+                LoadingState.WAITING, LoadingState.ERROR -> {
                     widget.show()
                 }
                 LoadingState.LOADING -> {

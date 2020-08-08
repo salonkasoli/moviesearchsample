@@ -1,6 +1,5 @@
 package com.github.salonkasoli.moviesearchsample.di.module
 
-import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailActivity
@@ -34,10 +33,5 @@ class MovieDetailUiModule(
             activity.findViewById(R.id.overview),
             activity.findViewById(R.id.overview_divider)
         )
-    }
-
-    @Provides
-    fun savedStateRegistry(): SavedStateRegistry {
-        return activity.savedStateRegistry
     }
 }

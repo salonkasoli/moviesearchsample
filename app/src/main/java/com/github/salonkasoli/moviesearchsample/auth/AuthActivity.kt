@@ -36,7 +36,7 @@ class AuthActivity : AppCompatActivity(R.layout.activity_auth) {
         }
         viewModel.loadingState.observe(this, Observer { loadingState: LoadingState ->
             when (loadingState) {
-                LoadingState.WAITINIG -> {
+                LoadingState.WAITING -> {
                     widget.show()
                 }
                 LoadingState.LOADING -> {

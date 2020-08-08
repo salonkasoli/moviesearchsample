@@ -48,7 +48,7 @@ class MovieDetailActivity : AppCompatActivity(R.layout.activity_movie_detail) {
 
         viewModel.loadingState.observe(this, Observer { loadingState: LoadingState ->
             when (loadingState) {
-                LoadingState.WAITINIG, LoadingState.SUCCESS -> {
+                LoadingState.WAITING, LoadingState.SUCCESS -> {
                     // Do nothing
                 }
                 LoadingState.LOADING -> {

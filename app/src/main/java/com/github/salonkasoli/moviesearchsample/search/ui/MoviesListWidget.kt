@@ -22,6 +22,12 @@ class MoviesListWidget(
     private val adapter = MoviesListAdapter()
 
     init {
+        paginationController.listSizeProvider = {
+            adapter.movies.size
+        }
+    }
+
+    init {
         val layoutManager = LinearLayoutManager(list.context)
         list.layoutManager = layoutManager
         list.adapter = adapter

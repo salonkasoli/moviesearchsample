@@ -1,7 +1,6 @@
 package com.github.salonkasoli.moviesearchsample.detail
 
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.core.api.RepoError
 import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
 import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
@@ -14,13 +13,11 @@ import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-// TODO добавить сохранение стейта
 class MovieDetailViewModel(
     private val movieId: Int,
     private val cache: MovieDetailCache,
     private val mapperFactory: MovieDetailModelMapperFactory,
-    private val movieDetailRepository: MovieDetailRepository,
-    private val savedStateRegistry: SavedStateRegistry
+    private val movieDetailRepository: MovieDetailRepository
 ) : ViewModel() {
 
     val loadingState: LiveData<LoadingState>
@@ -69,16 +66,14 @@ class MovieDetailViewModel(
         private val movieId: Int,
         private val movieDetailCache: MovieDetailCache,
         private val movieDetailModelMapperFactory: MovieDetailModelMapperFactory,
-        private val movieDetailRepository: MovieDetailRepository,
-        private val savedStateRegistry: SavedStateRegistry
+        private val movieDetailRepository: MovieDetailRepository
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return MovieDetailViewModel(
                 movieId,
                 movieDetailCache,
                 movieDetailModelMapperFactory,
-                movieDetailRepository,
-                savedStateRegistry
+                movieDetailRepository
             ) as T
         }
     }

@@ -1,8 +1,6 @@
 package com.github.salonkasoli.moviesearchsample.auth
 
-import android.os.Bundle
 import androidx.lifecycle.*
-import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.auth.session.Session
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRepository
@@ -23,8 +21,7 @@ class AuthViewModel(
     private val authedTokenRepository: AuthedTokenRepository,
     private val sessionRepository: SessionRepository,
     private val sessionIdCache: SessionIdCache,
-    private val movieDetailCache: MovieDetailCache,
-    savedStateRegistry: SavedStateRegistry
+    private val movieDetailCache: MovieDetailCache
 ) : ViewModel() {
 
     val errorEvent: LiveData<SimpleEvent>
@@ -35,25 +32,12 @@ class AuthViewModel(
     private val _errorEvent = MutableLiveData<SimpleEvent>()
     private val _loadingState = MutableLiveData<LoadingState>()
 
-    init {
-        savedStateRegistry.consumeRestoredStateForKey(BUNDLE_KEY)?.let {
-            _errorEvent.value = SimpleEvent(it.getBoolean(BUNDLE_ERROR_EVENT, true))
-            _loadingState.value = LoadingState.values().get(it.getInt(BUNDLE_STATE_ORDINAL))
-        }
-        savedStateRegistry.registerSavedStateProvider(BUNDLE_KEY, {
-            return@registerSavedStateProvider Bundle().apply {
-                _errorEvent.value?.hasBeenHandled?.let { putBoolean(BUNDLE_ERROR_EVENT, it) }
-                _loadingState.value?.ordinal?.let { putInt(BUNDLE_STATE_ORDINAL, it) }
-            }
-        })
-    }
-
     fun createSessionId(login: String, password: String) = viewModelScope.launch {
         _loadingState.postValue(LoadingState.LOADING)
         val tokenResponse: RepoResponse<NewTokenResponse> = newTokenRepository.getNewToken()
         if (tokenResponse is RepoError) {
             _errorEvent.postValue(SimpleEvent())
-            _loadingState.postValue(LoadingState.WAITINIG)
+            _loadingState.postValue(LoadingState.WAITING)
             return@launch
         }
         tokenResponse as RepoSuccess
@@ -63,7 +47,7 @@ class AuthViewModel(
 
         if (authedTokenResponse is RepoError) {
             _errorEvent.postValue(SimpleEvent())
-            _loadingState.postValue(LoadingState.WAITINIG)
+            _loadingState.postValue(LoadingState.WAITING)
             return@launch
         }
         authedTokenResponse as RepoSuccess
@@ -75,7 +59,7 @@ class AuthViewModel(
         when (sessionResponse) {
             is RepoError -> {
                 _errorEvent.postValue(SimpleEvent())
-                _loadingState.postValue(LoadingState.WAITINIG)
+                _loadingState.postValue(LoadingState.WAITING)
             }
             is RepoSuccess -> {
                 movieDetailCache.clear()
@@ -90,8 +74,7 @@ class AuthViewModel(
         private val authedTokenRepository: AuthedTokenRepository,
         private val sessionRepository: SessionRepository,
         private val sessionIdCache: SessionIdCache,
-        private val movieDetailCache: MovieDetailCache,
-        private val savedStateRegistry: SavedStateRegistry
+        private val movieDetailCache: MovieDetailCache
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return AuthViewModel(
@@ -99,15 +82,8 @@ class AuthViewModel(
                 authedTokenRepository,
                 sessionRepository,
                 sessionIdCache,
-                movieDetailCache,
-                savedStateRegistry
+                movieDetailCache
             ) as T
         }
-    }
-
-    companion object {
-        private const val BUNDLE_KEY = "auth_view_model"
-        private const val BUNDLE_ERROR_EVENT = "error_event"
-        private const val BUNDLE_STATE_ORDINAL = "state_ordinal"
     }
 }

@@ -1,6 +1,5 @@
 package com.github.salonkasoli.moviesearchsample.di.module
 
-import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.core.ui.LoadingWidget
 import com.github.salonkasoli.moviesearchsample.rate.RateActivity
@@ -23,10 +22,5 @@ class RateUiModule(
             LoadingWidget(activity.findViewById(R.id.loading_container)),
             activity.savedStateRegistry
         )
-    }
-
-    @Provides
-    fun savedStateRegistry(): SavedStateRegistry {
-        return activity.savedStateRegistry
     }
 }

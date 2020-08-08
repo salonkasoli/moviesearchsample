@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
                 }
                 LoadingState.ERROR -> {
                     widget.paginationController.isEnabled = true
-                    widget.paginationController.isLoading = false
+                    widget.paginationController.isLoading = true
                     widget.showError(movies)
                 }
             }

@@ -1,14 +1,17 @@
 package com.github.salonkasoli.moviesearchsample.search
 
 import android.util.Log
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchUiState
 import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchViewModel(
@@ -22,21 +25,23 @@ class SearchViewModel(
 
     private val _state = MutableLiveData<MovieSearchUiState>()
 
+    private val compositeDisposable = CompositeDisposable()
+
     fun updateQuery(query: String) {
         currentQuery = query
         loadMoreMovies()
     }
 
-    fun loadMoreMovies() = viewModelScope.launch {
+    fun loadMoreMovies() {
         val query: String = currentQuery
         val oldState: MovieSearchCache = repository.getCached(query)
 
         if (query.isBlank()) {
             updateState(query, MovieSearchUiState(oldState.movies, LoadingState.SUCCESS))
-            return@launch
+            return
         }
 
-        Single.fromCallable({
+        val disposable = Single.fromCallable({
             updateState(query, MovieSearchUiState(oldState.movies, LoadingState.LOADING))
             return@fromCallable repository.loadMore(query)
         })
@@ -58,12 +63,19 @@ class SearchViewModel(
                     updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
                 }
             )
+
+        compositeDisposable.add(disposable)
     }
 
     private fun updateState(query: String, newState: MovieSearchUiState) {
         if (query == currentQuery) {
             _state.postValue(newState)
         }
+    }
+
+    override fun onCleared() {
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 
     class Factory @Inject constructor(

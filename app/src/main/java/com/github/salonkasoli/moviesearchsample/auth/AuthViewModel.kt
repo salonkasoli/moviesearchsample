@@ -1,6 +1,9 @@
 package com.github.salonkasoli.moviesearchsample.auth
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenResponse
@@ -11,7 +14,6 @@ import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthViewModel(
@@ -30,7 +32,7 @@ class AuthViewModel(
 
     private val compositeDisposable = CompositeDisposable()
 
-    fun createSessionId(login: String, password: String) = viewModelScope.launch {
+    fun createSessionId(login: String, password: String) {
         val disposable = Single.fromCallable({
             _loadingState.postValue(LoadingState.LOADING)
             return@fromCallable newTokenRepository.getNewToken()

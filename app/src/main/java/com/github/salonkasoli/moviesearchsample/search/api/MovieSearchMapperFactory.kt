@@ -1,14 +1,10 @@
 package com.github.salonkasoli.moviesearchsample.search.api
 
+import androidx.annotation.WorkerThread
 import com.github.salonkasoli.moviesearchsample.configuration.Config
 import com.github.salonkasoli.moviesearchsample.configuration.ConfigRepository
-import com.github.salonkasoli.moviesearchsample.core.api.RepoError
-import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
-import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import com.github.salonkasoli.moviesearchsample.genre.GenreResponse
 import com.github.salonkasoli.moviesearchsample.genre.GenresRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 
@@ -24,18 +20,12 @@ class MovieSearchMapperFactory @Inject constructor(
      *
      * @return Маппер или null, если не удалось получить конфигурацию АПИ.
      */
-    suspend fun createMapper(): MovieModelMapper? = withContext(Dispatchers.IO) {
+    @Throws(Exception::class)
+    @WorkerThread
+    fun createMapper(): MovieModelMapper {
         val config: Config = configRepository.getConfig()
+        val genresResponse: GenreResponse = genresRepository.getMovieGenres()
 
-        val genresResponse: RepoResponse<GenreResponse> = genresRepository.getMovieGenres()
-        if (genresResponse is RepoError) {
-            return@withContext null
-        }
-        genresResponse as RepoSuccess
-
-        return@withContext MovieModelMapper(
-            config,
-            genresResponse.data.genres
-        )
+        return MovieModelMapper(config, genresResponse.genres)
     }
 }

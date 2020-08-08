@@ -21,8 +21,9 @@ class MovieDetailRepository @Inject constructor(
 
     private val apiKey = context.getString(R.string.moviedb_api_key)
 
-    @Volatile
-    private var mapper: MovieDetailModelMapper? = null
+    private val mapper: MovieDetailModelMapper by lazy {
+        return@lazy mapperFactory.createMapper()
+    }
 
     fun getMovieDetails(id: Int): MovieDetailUiModel {
         cache.get(id)?.let {
@@ -33,24 +34,12 @@ class MovieDetailRepository @Inject constructor(
             .getMovieDetail(id, apiKey, sessionIdCache.getSessionId())
             .execute()
 
-        var localMapper = mapper
-        if (localMapper == null) {
-            synchronized(this) {
-                localMapper = mapper
-                if (localMapper == null) {
-                    localMapper = mapperFactory.createMapper()
-                        ?: throw IllegalStateException("Cant create mapper")
-                    mapper = localMapper
-                }
-            }
-        }
-
         if (!res.isSuccessful || res.body() == null) {
             throw IllegalStateException("response = $res, body = ${res.body()}")
         }
 
         val networkMovieDetail: MovieDetailNetworkModel = res.body()!!
-        val uiMovieDetail: MovieDetailUiModel = localMapper!!.toUiModel(networkMovieDetail)
+        val uiMovieDetail: MovieDetailUiModel = mapper.toUiModel(networkMovieDetail)
 
         cache.put(id, uiMovieDetail)
         return uiMovieDetail

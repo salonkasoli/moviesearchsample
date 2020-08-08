@@ -1,23 +1,17 @@
 package com.github.salonkasoli.moviesearchsample.search
 
+import android.util.Log
 import androidx.lifecycle.*
-import com.github.salonkasoli.moviesearchsample.core.api.RepoError
-import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
-import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
-import com.github.salonkasoli.moviesearchsample.search.api.MovieModelMapper
-import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchMapperFactory
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
-import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchResponse
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchUiState
-import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
+import io.reactivex.Single
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class SearchViewModel(
-    private val cache: MovieListCache,
-    private val mapperFactory: MovieSearchMapperFactory,
     private val repository: MovieSearchRepository
 ) : ViewModel() {
 
@@ -28,8 +22,6 @@ class SearchViewModel(
 
     private val _state = MutableLiveData<MovieSearchUiState>()
 
-    private var movieMapper: MovieModelMapper? = null
-
     fun updateQuery(query: String) {
         currentQuery = query
         loadMoreMovies()
@@ -37,49 +29,35 @@ class SearchViewModel(
 
     fun loadMoreMovies() = viewModelScope.launch {
         val query: String = currentQuery
-        val oldState: MovieSearchCache = cache.get(query)
+        val oldState: MovieSearchCache = repository.getCached(query)
 
         if (query.isBlank()) {
             updateState(query, MovieSearchUiState(oldState.movies, LoadingState.SUCCESS))
             return@launch
         }
 
-        updateState(query, MovieSearchUiState(oldState.movies, LoadingState.LOADING))
-
-        if (movieMapper == null) {
-            movieMapper = mapperFactory.createMapper() ?: run {
-                updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
-                return@launch
+        Single.fromCallable({
+            updateState(query, MovieSearchUiState(oldState.movies, LoadingState.LOADING))
+            return@fromCallable repository.loadMore(query)
+        })
+            .subscribeOn(Schedulers.io())
+            .map { movieSearchCache: MovieSearchCache ->
+                val newLoadingState = if (movieSearchCache.isFullyLoaded()) {
+                    LoadingState.SUCCESS
+                } else {
+                    LoadingState.WAITING
+                }
+                return@map MovieSearchUiState(movieSearchCache.movies, newLoadingState)
             }
-        }
-
-        val searchRepoResponse: RepoResponse<MovieSearchResponse> =
-            repository.searchMovie(query, oldState.lastLoadedPage + 1)
-        if (searchRepoResponse is RepoError) {
-            updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
-            return@launch
-        }
-
-        val movieSearchResponse: MovieSearchResponse = (searchRepoResponse as RepoSuccess).data
-        val uiModels: List<MovieUiModel> = movieSearchResponse.result.map { movieNetworkModel ->
-            movieMapper!!.toUiModel(movieNetworkModel)
-        }
-
-        val newList = ArrayList(oldState.movies)
-        newList.addAll(uiModels)
-        val newState = MovieSearchCache(
-            movieSearchResponse.page,
-            movieSearchResponse.totalPages,
-            newList
-        )
-        cache.put(query, newState)
-
-        val newLoadingState = if (newState.isFullyLoaded()) {
-            LoadingState.SUCCESS
-        } else {
-            LoadingState.WAITING
-        }
-        updateState(query, MovieSearchUiState(newState.movies, newLoadingState))
+            .subscribe(
+                { movieSearchUiState ->
+                    updateState(query, movieSearchUiState)
+                },
+                {
+                    Log.wtf("lol", "error = $it")
+                    updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
+                }
+            )
     }
 
     private fun updateState(query: String, newState: MovieSearchUiState) {
@@ -89,16 +67,10 @@ class SearchViewModel(
     }
 
     class Factory @Inject constructor(
-        private val cache: MovieListCache,
-        private val mapperFactory: MovieSearchMapperFactory,
         private val movieSearchRepository: MovieSearchRepository
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return SearchViewModel(
-                cache,
-                mapperFactory,
-                movieSearchRepository
-            ) as T
+            return SearchViewModel(movieSearchRepository) as T
         }
     }
 }

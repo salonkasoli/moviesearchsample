@@ -17,7 +17,7 @@ class MovieDetailModelMapperFactory @Inject constructor(
      */
     @Throws
     @WorkerThread
-    fun createMapper(): MovieDetailModelMapper? {
+    fun createMapper(): MovieDetailModelMapper {
         val config: Config = configRepository.getConfig()
         return MovieDetailModelMapper(config)
     }

@@ -100,7 +100,7 @@ class MoviesListWidget(
         } else {
             list.visibility = View.GONE
             loadingStatusContainer.visibility = View.VISIBLE
-            progressBar.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
             emptyText.visibility = View.GONE
             emptyImage.visibility = View.GONE
             errorImage.visibility = View.VISIBLE

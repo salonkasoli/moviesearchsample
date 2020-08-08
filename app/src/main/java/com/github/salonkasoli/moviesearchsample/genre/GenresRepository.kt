@@ -1,11 +1,9 @@
 package com.github.salonkasoli.moviesearchsample.genre
 
 import android.content.Context
+import androidx.annotation.WorkerThread
 import com.github.salonkasoli.moviesearchsample.R
-import com.github.salonkasoli.moviesearchsample.core.api.*
 import com.google.gson.Gson
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
@@ -30,29 +28,19 @@ class GenresRepository @Inject constructor(
 
     private val apiKey = context.getString(R.string.moviedb_api_key)
 
-    suspend fun getMovieGenres(): RepoResponse<GenreResponse> = withContext(Dispatchers.IO) {
+    @Throws(Exception::class)
+    @WorkerThread
+    fun getMovieGenres(): GenreResponse {
         getCachedGenres()?.let { genres: GenreResponse ->
-            return@withContext RepoSuccess(
-                genres
-            )
+            return genres
         }
 
-        val result: ExecutionResult<GenreResponse> = retrofit.create(GenresApi::class.java)
+        val response: Response<GenreResponse> = retrofit.create(GenresApi::class.java)
             .getMovieGenres(apiKey)
-            .executeSafe()
-
-        if (result is ExecutionError) {
-            return@withContext RepoError<GenreResponse>(
-                result.exception
-            )
-        }
-
-        val response: Response<GenreResponse> = (result as ExecutionSuccess).response
+            .execute()
 
         if (!response.isSuccessful || response.body() == null) {
-            return@withContext RepoError<GenreResponse>(
-                IllegalStateException("response = $response, body = ${response.body()}")
-            )
+            throw IllegalStateException("response = $response, body = ${response.body()}")
         }
 
         val genres: GenreResponse = response.body()!!
@@ -61,9 +49,7 @@ class GenresRepository @Inject constructor(
             .putLong(PREF_LAST_UPDATE_TIME, System.currentTimeMillis())
             .apply()
 
-        return@withContext RepoSuccess(
-            genres
-        )
+        return genres
     }
 
     private fun getCachedGenres(): GenreResponse? {

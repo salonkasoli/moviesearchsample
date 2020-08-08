@@ -1,27 +1,23 @@
 package com.github.salonkasoli.moviesearchsample.auth
 
 import androidx.lifecycle.*
-import com.github.salonkasoli.moviesearchsample.auth.session.Session
 import com.github.salonkasoli.moviesearchsample.auth.session.SessionRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.authed.AuthedTokenResponse
 import com.github.salonkasoli.moviesearchsample.auth.token.newly.NewTokenRepository
 import com.github.salonkasoli.moviesearchsample.auth.token.newly.NewTokenResponse
-import com.github.salonkasoli.moviesearchsample.core.api.RepoError
-import com.github.salonkasoli.moviesearchsample.core.api.RepoResponse
-import com.github.salonkasoli.moviesearchsample.core.api.RepoSuccess
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
+import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class AuthViewModel(
     private val newTokenRepository: NewTokenRepository,
     private val authedTokenRepository: AuthedTokenRepository,
-    private val sessionRepository: SessionRepository,
-    private val sessionIdCache: SessionIdCache,
-    private val movieDetailCache: MovieDetailCache
+    private val sessionRepository: SessionRepository
 ) : ViewModel() {
 
     val errorEvent: LiveData<SimpleEvent>
@@ -32,57 +28,47 @@ class AuthViewModel(
     private val _errorEvent = MutableLiveData<SimpleEvent>()
     private val _loadingState = MutableLiveData<LoadingState>()
 
+    private val compositeDisposable = CompositeDisposable()
+
     fun createSessionId(login: String, password: String) = viewModelScope.launch {
-        _loadingState.postValue(LoadingState.LOADING)
-        val tokenResponse: RepoResponse<NewTokenResponse> = newTokenRepository.getNewToken()
-        if (tokenResponse is RepoError) {
-            _errorEvent.postValue(SimpleEvent())
-            _loadingState.postValue(LoadingState.WAITING)
-            return@launch
-        }
-        tokenResponse as RepoSuccess
-
-        val authedTokenResponse: RepoResponse<AuthedTokenResponse> =
-            authedTokenRepository.createAuthedToken(login, password, tokenResponse.data.token)
-
-        if (authedTokenResponse is RepoError) {
-            _errorEvent.postValue(SimpleEvent())
-            _loadingState.postValue(LoadingState.WAITING)
-            return@launch
-        }
-        authedTokenResponse as RepoSuccess
-
-        val sessionResponse: RepoResponse<Session> = sessionRepository.getSession(
-            authedTokenResponse.data.requestToken
-        )
-
-        when (sessionResponse) {
-            is RepoError -> {
-                _errorEvent.postValue(SimpleEvent())
-                _loadingState.postValue(LoadingState.WAITING)
+        val disposable = Single.fromCallable({
+            _loadingState.postValue(LoadingState.LOADING)
+            return@fromCallable newTokenRepository.getNewToken()
+        })
+            .subscribeOn(Schedulers.io())
+            .map { tokenResponse: NewTokenResponse ->
+                authedTokenRepository.createAuthedToken(login, password, tokenResponse.token)
             }
-            is RepoSuccess -> {
-                movieDetailCache.clear()
-                sessionIdCache.setSessionId(sessionResponse.data.sessionId)
-                _loadingState.postValue(LoadingState.SUCCESS)
+            .map { authedTokenResponse: AuthedTokenResponse ->
+                sessionRepository.getSession(authedTokenResponse.requestToken)
             }
-        }
+            .subscribe(
+                {
+                    _loadingState.postValue(LoadingState.SUCCESS)
+                },
+                {
+                    _errorEvent.postValue(SimpleEvent())
+                    _loadingState.postValue(LoadingState.WAITING)
+                }
+            )
+        compositeDisposable.add(disposable)
+    }
+
+    override fun onCleared() {
+        compositeDisposable.dispose()
+        super.onCleared()
     }
 
     class Factory @Inject constructor(
         private val newTokenRepository: NewTokenRepository,
         private val authedTokenRepository: AuthedTokenRepository,
-        private val sessionRepository: SessionRepository,
-        private val sessionIdCache: SessionIdCache,
-        private val movieDetailCache: MovieDetailCache
+        private val sessionRepository: SessionRepository
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return AuthViewModel(
                 newTokenRepository,
                 authedTokenRepository,
-                sessionRepository,
-                sessionIdCache,
-                movieDetailCache
+                sessionRepository
             ) as T
         }
     }

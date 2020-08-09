@@ -7,6 +7,6 @@ data class MovieSearchCache(
 ) {
 
     fun isFullyLoaded(): Boolean {
-        return lastLoadedPage == totalPages
+        return lastLoadedPage > totalPages
     }
 }

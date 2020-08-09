@@ -6,17 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.core.mvvm.SimpleEvent
-import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.rate.api.RateRepository
-import com.github.salonkasoli.moviesearchsample.rate.api.RateResponse
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class RateViewModel(
-    private val rateRepository: RateRepository,
-    private val movieDetailCache: MovieDetailCache
+    private val rateRepository: RateRepository
 ) : ViewModel() {
 
     val errorEvent: LiveData<SimpleEvent>
@@ -30,21 +27,17 @@ class RateViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     fun rateMovie(movieId: Int, rate: Float) {
-        val disposable = Single.create<RateResponse>({ emitter ->
-            _state.postValue(LoadingState.LOADING)
-            emitter.onSuccess(rateRepository.postRate(movieId, rate))
-        })
+        _state.postValue(LoadingState.LOADING)
+        val disposable = Single.fromCallable {
+            rateRepository.postRate(movieId, rate)
+        }
             .subscribeOn(Schedulers.io())
-            .subscribe(
-                { response: RateResponse? ->
-                    movieDetailCache.clear()
-                    _state.postValue(LoadingState.SUCCESS)
-                },
-                {
-                    _errorEvent.postValue(SimpleEvent())
-                    _state.postValue(LoadingState.WAITING)
-                }
-            )
+            .doOnSuccess { _state.postValue(LoadingState.SUCCESS) }
+            .doOnError {
+                _errorEvent.postValue(SimpleEvent())
+                _state.postValue(LoadingState.WAITING)
+            }
+            .subscribe()
         compositeDisposable.add(disposable)
     }
 
@@ -54,11 +47,10 @@ class RateViewModel(
     }
 
     class Factory @Inject constructor(
-        private val rateRepository: RateRepository,
-        private val movieDetailCache: MovieDetailCache
+        private val rateRepository: RateRepository
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            return RateViewModel(rateRepository, movieDetailCache) as T
+            return RateViewModel(rateRepository) as T
         }
     }
 }

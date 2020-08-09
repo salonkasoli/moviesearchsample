@@ -6,7 +6,7 @@ import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
 import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
-import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -28,8 +28,8 @@ class MovieDetailRepository @Inject constructor(
         return@lazy mapperFactory.createMapper()
     }
 
-    fun getMovieDetailObservable(id: Int): Observable<MovieDetailUiModel> {
-        return Observable.just(id)
+    fun getMovieDetailObservable(id: Int): Single<MovieDetailUiModel> {
+        return Single.just(id)
             .observeOn(Schedulers.io())
             .map { movieId -> getMovieDetails(movieId) }
     }

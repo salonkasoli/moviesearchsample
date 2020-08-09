@@ -34,9 +34,9 @@ class AuthViewModel(
 
     fun createSessionId(login: String, password: String) {
         _loadingState.postValue(LoadingState.LOADING)
-        val disposable = Single.fromCallable({
+        val disposable = Single.fromCallable {
             return@fromCallable newTokenRepository.getNewToken()
-        })
+        }
             .subscribeOn(Schedulers.io())
             .map { tokenResponse: NewTokenResponse ->
                 authedTokenRepository.createAuthedToken(login, password, tokenResponse.token)
@@ -44,15 +44,12 @@ class AuthViewModel(
             .map { authedTokenResponse: AuthedTokenResponse ->
                 sessionRepository.getSession(authedTokenResponse.requestToken)
             }
-            .subscribe(
-                {
-                    _loadingState.postValue(LoadingState.SUCCESS)
-                },
-                {
-                    _errorEvent.postValue(SimpleEvent())
-                    _loadingState.postValue(LoadingState.WAITING)
-                }
-            )
+            .doOnSuccess { _loadingState.postValue(LoadingState.SUCCESS) }
+            .doOnError {
+                _errorEvent.postValue(SimpleEvent())
+                _loadingState.postValue(LoadingState.WAITING)
+            }
+            .subscribe()
         compositeDisposable.add(disposable)
     }
 

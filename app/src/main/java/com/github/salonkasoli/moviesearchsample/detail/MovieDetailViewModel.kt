@@ -30,15 +30,12 @@ class MovieDetailViewModel(
         _loadingState.postValue(LoadingState.LOADING)
         val disposable = movieDetailRepository.getMovieDetailObservable(movieId)
             .subscribeOn(Schedulers.io())
-            .subscribe(
-                { movieDetailUiModel ->
-                    _movieDetail.postValue(movieDetailUiModel)
-                    _loadingState.postValue(LoadingState.SUCCESS)
-                },
-                {
-                    _loadingState.postValue(LoadingState.ERROR)
-                }
-            )
+            .doOnSuccess { movieDetailUiModel: MovieDetailUiModel ->
+                _movieDetail.postValue(movieDetailUiModel)
+                _loadingState.postValue(LoadingState.SUCCESS)
+            }
+            .doOnError { _loadingState.postValue(LoadingState.ERROR) }
+            .subscribe()
 
         compositeDisposable.add(disposable)
     }

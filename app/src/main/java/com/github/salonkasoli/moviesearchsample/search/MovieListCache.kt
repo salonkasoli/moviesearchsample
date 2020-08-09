@@ -20,7 +20,7 @@ class MovieListCache @Inject constructor() {
             return state
         }
 
-        val newState = MovieSearchCache(0, -1, ArrayList())
+        val newState = MovieSearchCache(0, 1, ArrayList())
         put(query, newState)
         return newState
     }

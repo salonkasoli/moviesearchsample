@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.auth.SessionIdCache
+import com.github.salonkasoli.moviesearchsample.detail.MovieDetailCache
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -11,7 +12,8 @@ import javax.inject.Inject
 class RateRepository @Inject constructor(
     private val retrofit: Retrofit,
     context: Context,
-    private val sessionIdCache: SessionIdCache
+    private val sessionIdCache: SessionIdCache,
+    private val movieDetailCache: MovieDetailCache
 ) {
     private val apiKey = context.getString(R.string.moviedb_api_key)
 
@@ -32,6 +34,7 @@ class RateRepository @Inject constructor(
             throw IllegalStateException("response = $response, body = ${response.body()}")
         }
 
+        movieDetailCache.clear()
         return rateResponse
     }
 }

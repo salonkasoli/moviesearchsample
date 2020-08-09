@@ -53,14 +53,13 @@ class SearchViewModel(
                 }
                 return@map MovieSearchUiState(movieSearchCache.movies, newLoadingState)
             }
-            .subscribe(
-                { movieSearchUiState ->
-                    updateState(query, movieSearchUiState)
-                },
-                {
-                    updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
-                }
-            )
+            .doOnSuccess { movieSearchUiState ->
+                updateState(query, movieSearchUiState)
+            }
+            .doOnError {
+                updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
+            }
+            .subscribe()
 
         compositeDisposable.add(disposable)
     }

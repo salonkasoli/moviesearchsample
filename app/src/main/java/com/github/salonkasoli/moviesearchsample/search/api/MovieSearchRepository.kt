@@ -6,7 +6,7 @@ import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
-import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -31,8 +31,8 @@ class MovieSearchRepository @Inject constructor(
         return cache.get(query)
     }
 
-    fun loadMoreObservable(query: String): Observable<MovieSearchCache> {
-        return Observable.just(query)
+    fun loadMoreObservable(query: String): Single<MovieSearchCache> {
+        return Single.just(query)
             .observeOn(Schedulers.io())
             .map { cache.get(query) }
             .map { oldState: MovieSearchCache ->
@@ -42,7 +42,7 @@ class MovieSearchRepository @Inject constructor(
                 )
             }
             // Кэшируем данные
-            .doOnNext { movieSearchCache: MovieSearchCache ->
+            .doOnSuccess { movieSearchCache: MovieSearchCache ->
                 cache.put(query, movieSearchCache)
             }
     }

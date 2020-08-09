@@ -5,13 +5,13 @@
 
 Библиотеки, использованные в проекте:
 *  [Dagger2](https://github.com/google/dagger) для dependency injection
+*  [RxJava](https://github.com/ReactiveX/RxJava) для работы в фоне
 *  Реализация [ViewModel](https://developer.android.com/topic/libraries/architecture/viewmodel) от гугла.
-*  Coroutines + Architecture components для работы в фоне [(ссылка)](https://developer.android.com/topic/libraries/architecture/coroutines).
 *  [Retrofit2](https://github.com/square/retrofit) для запросов к АПИ.
 *  [Fresco](https://github.com/facebook/fresco) загрузки и отображения картинок.
 
 В проекте используется архитектура **MVVM**. Основные элементы архитектуры:  
-*  *Repository* - элемент, отвечающий за загрузку конкретных данных.
+*  *Repository* - элемент, отвечающий за загрузку данных.
 *  *ViewModel* - дергает репозитории, проставляет результат их работы в *LiveData*.
 *  *Widget* - глупая абстракция над view. Предоставляет контракт "что показать", а сама решает "как показать".
 *  *Activity* - точка входа в функционал. Подписывает *Widget* на *ViewModel*. Реагирует на события *Widget*, вызывает соответствующие методы *ViewModel*.
@@ -33,7 +33,7 @@ val widget = App.instance.appComponent.movieSearchComponent()
 К сожалению, [официальное решение](https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate)
 по сохранению состоянию ViewModel меня не устроило т.к. оно не позволяет делать кастомные фабрики.
 
-
 **TODO**
-
-*  Попробовать RxJava2
+*  В DI вместо сабкомпонентов заюзать обычные компоненты
+*  Получше разрулить конфигурацию API и Жанров (см. GenresRepository)
+*  Перенести обработку ввода в SearchView на RxJava

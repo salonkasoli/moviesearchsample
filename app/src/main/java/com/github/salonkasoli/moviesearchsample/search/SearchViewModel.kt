@@ -1,9 +1,11 @@
 package com.github.salonkasoli.moviesearchsample.search
 
+import android.os.Bundle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.savedstate.SavedStateRegistry
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchCache
@@ -63,6 +65,19 @@ class SearchViewModel(
         compositeDisposable.add(disposable)
     }
 
+    fun handleState(savedStateRegistry: SavedStateRegistry) {
+        savedStateRegistry.consumeRestoredStateForKey(BUNDLE_KEY)?.let {
+            currentQuery = it.getString(SAVE_QUERY, "")
+            _state.value = it.getSerializable(SAVE_STATE) as? MovieSearchUiState
+        }
+        savedStateRegistry.registerSavedStateProvider(BUNDLE_KEY, {
+            Bundle().apply {
+                putString(SAVE_QUERY, currentQuery)
+                putSerializable(SAVE_STATE, _state.value)
+            }
+        })
+    }
+
     private fun updateState(query: String, newState: MovieSearchUiState) {
         if (query == currentQuery) {
             _state.postValue(newState)
@@ -80,5 +95,12 @@ class SearchViewModel(
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return SearchViewModel(movieSearchRepository) as T
         }
+    }
+
+    companion object {
+
+        private const val BUNDLE_KEY = "search_bundle"
+        private const val SAVE_QUERY = "query"
+        private const val SAVE_STATE = "state"
     }
 }

@@ -31,13 +31,25 @@ class MovieSearchRepository @Inject constructor(
         return cache.get(query)
     }
 
-    fun getCachedObservable(query: String): Observable<MovieSearchCache> {
-        return Observable.just(cache.get(query))
+    fun loadMoreObservable(query: String): Observable<MovieSearchCache> {
+        return Observable.just(query)
+            .observeOn(Schedulers.io())
+            .map { cache.get(query) }
+            .map { oldState: MovieSearchCache ->
+                return@map mergeState(
+                    oldState,
+                    searchMovie(query, oldState.lastLoadedPage + 1)
+                )
+            }
+            // Кэшируем данные
+            .doOnNext { movieSearchCache: MovieSearchCache ->
+                cache.put(query, movieSearchCache)
+            }
     }
 
     @Throws(Exception::class)
     @WorkerThread
-    fun searchMovie(query: String, page: Int): MovieSearchResponse {
+    private fun searchMovie(query: String, page: Int): MovieSearchResponse {
         val response: Response<MovieSearchResponse> = retrofit.create(MovieSearchApi::class.java)
             .searchMovie(query, page, apiKey)
             .execute()
@@ -46,31 +58,6 @@ class MovieSearchRepository @Inject constructor(
             throw  IllegalStateException("response = $response, body = ${response.body()}")
         }
         return response.body()!!
-    }
-
-    fun searchMovieObservable(query: String, page: Int): Observable<MovieSearchResponse> {
-        return Observable.fromCallable {
-            searchMovie(query, page)
-        }
-    }
-
-    fun loadMoreObservable(query: String): Observable<MovieSearchCache> {
-        return getCachedObservable(query)
-            .observeOn(Schedulers.io())
-            .flatMap(
-                // Загружаем новую страничку
-                { oldState: MovieSearchCache ->
-                    return@flatMap searchMovieObservable(query, oldState.lastLoadedPage + 1)
-                },
-                // Добавляем резульат загрузки в состояние
-                { oldState: MovieSearchCache, response: MovieSearchResponse ->
-                    return@flatMap mergeState(oldState, response)
-                }
-            )
-            // Кэшируем данные
-            .doOnNext { movieSearchCache: MovieSearchCache ->
-                cache.put(query, movieSearchCache)
-            }
     }
 
     private fun mergeState(

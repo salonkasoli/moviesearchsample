@@ -34,7 +34,7 @@
             android:id="@+id/progress_bar"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:visibility="visible" />
 
         <TextView
@@ -46,14 +46,18 @@
             android:gravity="center"
             android:text="@string/movie_list_empty_search_text"
             android:textColor="@color/regular_text_color"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/travolta"
             android:layout_width="293dp"
             android:layout_height="300dp"
             android:layout_below="@id/toolbar"
-            android:src="@drawable/travolta" />
+            android:src="@drawable/travolta"
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/error_image"

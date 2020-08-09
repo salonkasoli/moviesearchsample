@@ -31,7 +31,7 @@ val widget = App.instance.appComponent.movieSearchComponent()
 **Проблемы, пришедшие с ViewModel**
 
 Пропало нормально сохранение состояний (врубаем галочку dont keep activities и грустим).  
-Попробовать заиспользовать [официальное решение](https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate).
+Можно попробовать заиспользовать [официальное решение](https://developer.android.com/topic/libraries/architecture/viewmodel-savedstate) или забить.
 
 
 **TODO**

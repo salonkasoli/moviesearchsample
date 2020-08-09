@@ -1,6 +1,5 @@
 package com.github.salonkasoli.moviesearchsample.search
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,7 +8,6 @@ import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.search.api.MovieSearchRepository
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchUiState
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -36,15 +34,14 @@ class SearchViewModel(
         val query: String = currentQuery
         val oldState: MovieSearchCache = repository.getCached(query)
 
-        if (query.isBlank()) {
+        if (oldState.isFullyLoaded() || query.isBlank()) {
             updateState(query, MovieSearchUiState(oldState.movies, LoadingState.SUCCESS))
             return
         }
 
-        val disposable = Single.fromCallable({
-            updateState(query, MovieSearchUiState(oldState.movies, LoadingState.LOADING))
-            return@fromCallable repository.loadMore(query)
-        })
+        updateState(query, MovieSearchUiState(oldState.movies, LoadingState.LOADING))
+
+        val disposable = repository.loadMoreObservable(query)
             .subscribeOn(Schedulers.io())
             .map { movieSearchCache: MovieSearchCache ->
                 val newLoadingState = if (movieSearchCache.isFullyLoaded()) {
@@ -59,7 +56,6 @@ class SearchViewModel(
                     updateState(query, movieSearchUiState)
                 },
                 {
-                    Log.wtf("lol", "error = $it")
                     updateState(query, MovieSearchUiState(oldState.movies, LoadingState.ERROR))
                 }
             )

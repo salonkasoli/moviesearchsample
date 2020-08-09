@@ -83,7 +83,22 @@ class MainActivity : AppCompatActivity(R.layout.activity_search) {
         widget.searchClickedListener = {
             widget.updateQuery(viewModel.currentQuery)
         }
+
+        savedStateRegistry.consumeRestoredStateForKey(BUNDLE_KEY)?.let {
+            viewModel.currentQuery = it.getString(BUNDLE_QUERY, "")
+        }
+        savedStateRegistry.registerSavedStateProvider(BUNDLE_KEY, {
+            Bundle().apply {
+                putString(BUNDLE_QUERY, viewModel.currentQuery)
+            }
+        })
+
         widget.updateQuery(viewModel.currentQuery)
         return true
+    }
+
+    companion object {
+        private const val BUNDLE_KEY = "search_bundle"
+        private const val BUNDLE_QUERY = "query"
     }
 }

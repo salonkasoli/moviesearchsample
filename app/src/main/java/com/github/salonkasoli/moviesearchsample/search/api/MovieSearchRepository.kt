@@ -1,10 +1,13 @@
 package com.github.salonkasoli.moviesearchsample.search.api
 
 import android.content.Context
+import androidx.annotation.WorkerThread
 import com.github.salonkasoli.moviesearchsample.R
 import com.github.salonkasoli.moviesearchsample.search.MovieListCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieSearchCache
 import com.github.salonkasoli.moviesearchsample.search.ui.MovieUiModel
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -28,6 +31,12 @@ class MovieSearchRepository @Inject constructor(
         return cache.get(query)
     }
 
+    fun getCachedObservable(query: String): Observable<MovieSearchCache> {
+        return Observable.just(cache.get(query))
+    }
+
+    @Throws(Exception::class)
+    @WorkerThread
     fun searchMovie(query: String, page: Int): MovieSearchResponse {
         val response: Response<MovieSearchResponse> = retrofit.create(MovieSearchApi::class.java)
             .searchMovie(query, page, apiKey)
@@ -39,25 +48,45 @@ class MovieSearchRepository @Inject constructor(
         return response.body()!!
     }
 
-    fun loadMore(query: String): MovieSearchCache {
-        val oldState: MovieSearchCache = cache.get(query)
+    fun searchMovieObservable(query: String, page: Int): Observable<MovieSearchResponse> {
+        return Observable.fromCallable {
+            searchMovie(query, page)
+        }
+    }
 
-        val movieSearchResponse: MovieSearchResponse =
-            searchMovie(query, oldState.lastLoadedPage + 1)
+    fun loadMoreObservable(query: String): Observable<MovieSearchCache> {
+        return getCachedObservable(query)
+            .observeOn(Schedulers.io())
+            .flatMap(
+                // Загружаем новую страничку
+                { oldState: MovieSearchCache ->
+                    return@flatMap searchMovieObservable(query, oldState.lastLoadedPage + 1)
+                },
+                // Добавляем резульат загрузки в состояние
+                { oldState: MovieSearchCache, response: MovieSearchResponse ->
+                    return@flatMap mergeState(oldState, response)
+                }
+            )
+            // Кэшируем данные
+            .doOnNext { movieSearchCache: MovieSearchCache ->
+                cache.put(query, movieSearchCache)
+            }
+    }
 
-        val uiModels: List<MovieUiModel> = movieSearchResponse.result.map { movieNetworkModel ->
+    private fun mergeState(
+        oldState: MovieSearchCache,
+        response: MovieSearchResponse
+    ): MovieSearchCache {
+        val uiModels: List<MovieUiModel> = response.result.map { movieNetworkModel ->
             movieMapper.toUiModel(movieNetworkModel)
         }
 
         val newList = ArrayList(oldState.movies)
         newList.addAll(uiModels)
-        val newState = MovieSearchCache(
-            movieSearchResponse.page,
-            movieSearchResponse.totalPages,
+        return MovieSearchCache(
+            response.page,
+            response.totalPages,
             newList
         )
-
-        cache.put(query, newState)
-        return newState
     }
 }

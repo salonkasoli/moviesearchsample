@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.github.salonkasoli.moviesearchsample.core.mvvm.LoadingState
 import com.github.salonkasoli.moviesearchsample.detail.api.MovieDetailRepository
 import com.github.salonkasoli.moviesearchsample.detail.ui.MovieDetailUiModel
-import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
@@ -28,10 +27,8 @@ class MovieDetailViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     fun updateMovieDetails() {
-        val disposable = Single.create<MovieDetailUiModel>({ emitter ->
-            _loadingState.postValue(LoadingState.LOADING)
-            emitter.onSuccess(movieDetailRepository.getMovieDetails(movieId))
-        })
+        _loadingState.postValue(LoadingState.LOADING)
+        val disposable = movieDetailRepository.getMovieDetailObservable(movieId)
             .subscribeOn(Schedulers.io())
             .subscribe(
                 { movieDetailUiModel ->

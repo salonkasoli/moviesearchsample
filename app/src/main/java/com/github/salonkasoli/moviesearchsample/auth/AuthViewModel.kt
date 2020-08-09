@@ -33,8 +33,8 @@ class AuthViewModel(
     private val compositeDisposable = CompositeDisposable()
 
     fun createSessionId(login: String, password: String) {
+        _loadingState.postValue(LoadingState.LOADING)
         val disposable = Single.fromCallable({
-            _loadingState.postValue(LoadingState.LOADING)
             return@fromCallable newTokenRepository.getNewToken()
         })
             .subscribeOn(Schedulers.io())
